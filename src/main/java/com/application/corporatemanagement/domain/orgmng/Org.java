@@ -1,10 +1,7 @@
 package com.application.corporatemanagement.domain.orgmng;
 
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.aspectj.weaver.ast.Or;
 
 import java.time.LocalDateTime;
 
@@ -15,7 +12,7 @@ public class Org {
     private Long id;
     private Long tenantId;
     private Long superiorId;
-    private String orgTypeCode;
+    private String orgType;
     private Long leaderId;
     private String name;
     private String status;

@@ -2,6 +2,7 @@ package com.application.corporatemanagement.adapter.driven.persistence.orgmng;
 
 
 import com.application.corporatemanagement.domain.orgmng.Org;
+import com.application.corporatemanagement.domain.orgmng.OrgStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -24,8 +25,18 @@ public class OrgRepositoryJdbc implements com.application.corporatemanagement.do
     @Override
     public Optional<Org> save(Org org, Long userId) {
         String sql = "insert into " + table + " (`tenant_id`,`org_type_code`,`superior_id`,`leader_id`,`name`,`status`,`created_by`,`last_updated_by`) values(?,?,?,?,?,?,?,?)";
-        int update = jdbcTemplate.update(sql, org.getTenantId(), org.getOrgTypeCode(), org.getSuperiorId(), org.getLeaderId(), org.getName(), Status.EFFECTIVE.getValue(), userId, userId);
+        int update = jdbcTemplate.update(sql, org.getTenantId(), org.getOrgType(), org.getSuperiorId(), org.getLeaderId(), org.getName(), Status.EFFECTIVE.getValue(), userId, userId);
         if (update > 0) return Optional.of(org);
         return Optional.empty();
+    }
+
+    @Override
+    public Optional<Org> findByIdAndStatus(Long tenant, Long id, OrgStatus status) {
+        return Optional.empty();
+    }
+
+    @Override
+    public boolean existsBySuperiorAndName(Long tenant, Long id, String name) {
+        return false;
     }
 }
