@@ -39,15 +39,12 @@ class OrgServiceTest {
 
     @Test
     void should_add_success_if_pass_verify() {
-        Org org = Org.builder()
-                .id(1L)
-                .build();
         OrgDto orgDto = OrgDto.builder()
-                .id(1L)
+                .name("org")
                 .build();
-        when(orgRepository.save(any(), any())).thenReturn(Optional.of(org));
+        when(orgRepository.save(any(), any())).then(invocation -> Optional.of(invocation.getArgument(0)));
         Optional<Org> result = orgService.add(orgDto, userId);
         assertTrue(result.isPresent());
-        assertEquals(1L, result.get().getId());
+        assertEquals(orgDto.getName(), result.get().getName());
     }
 }
