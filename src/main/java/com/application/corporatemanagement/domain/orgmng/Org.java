@@ -20,4 +20,6 @@ public class Org {
     private Long createdBy;
     private LocalDateTime lastUpdatedAt;
     private Long lastUpdatedBy;
+
+
 }

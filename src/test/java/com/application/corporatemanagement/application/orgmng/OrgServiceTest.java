@@ -1,23 +1,53 @@
 package com.application.corporatemanagement.application.orgmng;
 
+import com.application.corporatemanagement.domain.exceptions.BusinessException;
+import com.application.corporatemanagement.domain.orgmng.Org;
+import com.application.corporatemanagement.domain.orgmng.OrgRepository;
+import com.application.corporatemanagement.domain.orgmng.OrgValidator;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.mockito.Mockito;
+
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 
-@Component
 class OrgServiceTest {
 
-    @Autowired
-    OrgService orgService;
+    protected OrgValidator orgValidator;
+    protected OrgRepository orgRepository;
+    private OrgService orgService;
+
+    private final Long userId = 1l;
+
+    @BeforeEach
+    void setUp() {
+        orgValidator = Mockito.mock(OrgValidator.class);
+        orgRepository = Mockito.mock(OrgRepository.class);
+        orgService = new OrgService(orgRepository, orgValidator);
+    }
 
     @Test
     void should_throw_exception_if_verify_fail() {
+        OrgDto orgDto = OrgDto.builder().build();
+        doThrow(new BusinessException("check fail")).when(orgValidator).validate(orgDto);
+        assertThrows(BusinessException.class, () -> orgService.add(orgDto, userId));
     }
 
     @Test
     void should_add_success_if_pass_verify() {
-
+        Org org = Org.builder()
+                .id(1L)
+                .build();
+        OrgDto orgDto = OrgDto.builder()
+                .id(1L)
+                .build();
+        when(orgRepository.save(any(), any())).thenReturn(Optional.of(org));
+        Optional<Org> result = orgService.add(orgDto, userId);
+        assertTrue(result.isPresent());
+        assertEquals(1L, result.get().getId());
     }
 }
