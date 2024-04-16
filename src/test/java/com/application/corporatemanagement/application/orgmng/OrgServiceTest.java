@@ -16,12 +16,10 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 class OrgServiceTest {
-
     protected OrgValidator orgValidator;
     protected OrgRepository orgRepository;
     private OrgService orgService;
-
-    private final Long userId = 1l;
+    private final Long userId = 1L;
 
     @BeforeEach
     void setUp() {
