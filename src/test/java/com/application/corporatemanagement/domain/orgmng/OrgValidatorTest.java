@@ -1,19 +1,21 @@
 package com.application.corporatemanagement.domain.orgmng;
 
 import com.application.corporatemanagement.application.orgmng.OrgDto;
-import com.application.corporatemanagement.domain.exceptions.BusinessException;
-import com.application.corporatemanagement.domain.exceptions.DirtyDataException;
+import com.application.corporatemanagement.domain.common.exceptions.BusinessException;
+import com.application.corporatemanagement.domain.common.exceptions.DirtyDataException;
+import com.application.corporatemanagement.domain.common.validator.TenantValidator;
 import com.application.corporatemanagement.domain.tenantmng.TenantRepository;
 import com.application.corporatemanagement.domain.tenantmng.TenantStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 class OrgValidatorTest {
 
@@ -21,6 +23,7 @@ class OrgValidatorTest {
     protected SuperiorOrgStub superiorOrgStub;
     protected Org superiorOrg;
     protected OrgDto orgDto;
+    protected TenantValidator tenantValidator;
     private OrgValidator orgValidator;
 
     private TenantRepository tenantRepository;
@@ -37,11 +40,12 @@ class OrgValidatorTest {
         orgTypeRepository = Mockito.mock(OrgTypeRepository.class);
         orgRepository = Mockito.mock(OrgRepository.class);
         empRepository = Mockito.mock(EmpRepository.class);
+        tenantValidator = mock(TenantValidator.class);
         orgDto = mockOrgDto();
         stub();
         when(empRepository.existsByIdAndStatus(orgDto.getTenant(), orgDto.getLeader(), EmpStatus.REGULAR, EmpStatus.PROBATION)).thenReturn(true);
         when(orgRepository.existsBySuperiorAndName(orgDto.getTenant(), orgDto.getSuperior(), orgDto.getName())).thenReturn(false);
-        orgValidator = new OrgValidator(tenantRepository, orgTypeRepository, orgRepository, empRepository);
+        orgValidator = new OrgValidator(tenantRepository, orgTypeRepository, orgRepository, empRepository, tenantValidator);
     }
 
     private void stub() {
@@ -136,8 +140,8 @@ class OrgValidatorTest {
     }
 
     @Test
-    void should_throw_exception_if_tenant_is_invalid() {
-        when(tenantRepository.existsByIdAndStatus(orgDto.getTenant(), TenantStatus.EFFECTIVE)).thenReturn(false);
+    void should_throw_exception_if_tenant_check_fail() {
+        doThrow(BusinessException.class).when(tenantValidator).tenantShouldBeValid(orgDto.getTenant());
         assertThrowException();
     }
 

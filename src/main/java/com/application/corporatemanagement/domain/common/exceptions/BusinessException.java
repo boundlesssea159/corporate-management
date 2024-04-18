@@ -1,4 +1,4 @@
-package com.application.corporatemanagement.domain.exceptions;
+package com.application.corporatemanagement.domain.common.exceptions;
 
 public class BusinessException extends RuntimeException {
 

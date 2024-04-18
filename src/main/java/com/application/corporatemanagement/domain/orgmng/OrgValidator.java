@@ -1,10 +1,10 @@
 package com.application.corporatemanagement.domain.orgmng;
 
 import com.application.corporatemanagement.application.orgmng.OrgDto;
-import com.application.corporatemanagement.domain.exceptions.BusinessException;
-import com.application.corporatemanagement.domain.exceptions.DirtyDataException;
+import com.application.corporatemanagement.domain.common.exceptions.BusinessException;
+import com.application.corporatemanagement.domain.common.exceptions.DirtyDataException;
+import com.application.corporatemanagement.domain.common.validator.TenantValidator;
 import com.application.corporatemanagement.domain.tenantmng.TenantRepository;
-import com.application.corporatemanagement.domain.tenantmng.TenantStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,16 +16,19 @@ public class OrgValidator {
     private final OrgRepository orgRepository;
     private final EmpRepository empRepository;
 
+    private final TenantValidator tenantValidator;
+
     @Autowired
-    OrgValidator(TenantRepository tenantRepository, OrgTypeRepository orgTypeRepository, OrgRepository orgRepository, EmpRepository empRepository) {
+    OrgValidator(TenantRepository tenantRepository, OrgTypeRepository orgTypeRepository, OrgRepository orgRepository, EmpRepository empRepository, TenantValidator tenantValidator) {
         this.tenantRepository = tenantRepository;
         this.orgTypeRepository = orgTypeRepository;
         this.orgRepository = orgRepository;
         this.empRepository = empRepository;
+        this.tenantValidator = tenantValidator;
     }
 
     public void validate(OrgDto request) {
-        tenantShouldBeValid(request.getTenant());
+        tenantValidator.tenantShouldBeValid(request.getTenant());
         orgTypeShouldBeNotEmpty(request.getOrgType());
         corporateShouldNotBeCreatdAlone(request.getOrgType());
         orgTypeShouldBeValid(request.getTenant(), request.getOrgType());
@@ -33,12 +36,6 @@ public class OrgValidator {
         orgLeaderShouldBeOnWorking(request.getTenant(), request.getLeader());
         orgShouldHaveName(request.getName());
         subOrgNameShouldNotBeDuplicated(request.getTenant(), request.getSuperior(), request.getName());
-    }
-
-    private void tenantShouldBeValid(Long tenant) {
-        if (!tenantRepository.existsByIdAndStatus(tenant, TenantStatus.EFFECTIVE)) {
-            throw new BusinessException("id为'" + tenant + "'的租户不是有效租户！");
-        }
     }
 
     private static void orgTypeShouldBeNotEmpty(String orgType) {

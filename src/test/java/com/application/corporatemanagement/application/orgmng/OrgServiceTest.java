@@ -1,6 +1,6 @@
 package com.application.corporatemanagement.application.orgmng;
 
-import com.application.corporatemanagement.domain.exceptions.BusinessException;
+import com.application.corporatemanagement.domain.common.exceptions.BusinessException;
 import com.application.corporatemanagement.domain.orgmng.Org;
 import com.application.corporatemanagement.domain.orgmng.OrgRepository;
 import com.application.corporatemanagement.domain.orgmng.OrgValidator;
