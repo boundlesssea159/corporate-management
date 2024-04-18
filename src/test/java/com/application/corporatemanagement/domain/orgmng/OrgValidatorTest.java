@@ -8,7 +8,6 @@ import com.application.corporatemanagement.domain.tenantmng.TenantRepository;
 import com.application.corporatemanagement.domain.tenantmng.TenantStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import java.util.Optional;
 
@@ -24,6 +23,7 @@ class OrgValidatorTest {
     protected OrgDto orgDto;
     protected TenantValidator tenantValidator;
     protected OrgTypeValidator orgTypeValidator;
+    protected SuperiorValidator superiorValidator;
     private OrgValidator orgValidator;
 
     private TenantRepository tenantRepository;
@@ -42,12 +42,13 @@ class OrgValidatorTest {
         empRepository = mock(EmpRepository.class);
         tenantValidator = mock(TenantValidator.class);
         orgTypeValidator = mock(OrgTypeValidator.class);
+        superiorValidator = mock(SuperiorValidator.class);
 
         orgDto = mockOrgDto();
         stub();
         when(empRepository.existsByIdAndStatus(orgDto.getTenant(), orgDto.getLeader(), EmpStatus.REGULAR, EmpStatus.PROBATION)).thenReturn(true);
         when(orgRepository.existsBySuperiorAndName(orgDto.getTenant(), orgDto.getSuperior(), orgDto.getName())).thenReturn(false);
-        orgValidator = new OrgValidator(tenantRepository, orgTypeRepository, orgRepository, empRepository, tenantValidator, orgTypeValidator);
+        orgValidator = new OrgValidator(orgTypeRepository, orgRepository, empRepository, tenantValidator, orgTypeValidator, superiorValidator);
     }
 
     private void stub() {
@@ -137,33 +138,8 @@ class OrgValidatorTest {
     }
 
     @Test
-    void should_throw_exception_if_superior_org_type_is_invalid() {
-        when(orgTypeRepository.findByCodeAndStatus(superiorOrg.getTenantId(), superiorOrg.getOrgType(), OrgTypeStatus.EFFECTIVE)).thenReturn(Optional.empty());
-        assertThrows(DirtyDataException.class, () -> orgValidator.validate(orgDto));
-    }
-
-    @Test
-    void should_throw_exception_if_superior_is_not_valid() {
-        when(orgRepository.findByIdAndStatus(orgDto.getTenant(), orgDto.getSuperior(), OrgStatus.EFFECTIVE)).thenReturn(Optional.empty());
-        assertThrowException();
-    }
-
-    @Test
-    void should_throw_exception_if_superior_of_dev_group_is_not_dev_center() {
-        superiorOrgStub.assignOrgType("NO_CENTER").stub();
-        assertThrowException();
-    }
-
-    @Test
-    void should_throw_exception_if_superior_of_dev_center_is_not_entp() {
-        superiorOrgStub.assignOrgType("NO_ENTP").stub();
-        assertThrowException();
-    }
-
-    @Test
-    void should_throw_exception_if_superior_of_direct_dept_is_not_entp() {
-        normalOrgStub.assignOrgType("DIRDEP").stub();
-        superiorOrgStub.assignOrgType("NO_ENTP").stub();
+    void should_throw_exception_if_superior_check_fail() {
+        doThrow(BusinessException.class).when(superiorValidator).validate(any(), any(), any());
         assertThrowException();
     }
 

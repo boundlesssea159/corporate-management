@@ -4,59 +4,46 @@ import com.application.corporatemanagement.application.orgmng.OrgDto;
 import com.application.corporatemanagement.domain.common.exceptions.BusinessException;
 import com.application.corporatemanagement.domain.common.exceptions.DirtyDataException;
 import com.application.corporatemanagement.domain.common.validator.TenantValidator;
-import com.application.corporatemanagement.domain.tenantmng.TenantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class OrgValidator {
-
-    private final TenantRepository tenantRepository;
     private final OrgTypeRepository orgTypeRepository;
     private final OrgRepository orgRepository;
     private final EmpRepository empRepository;
 
     private final TenantValidator tenantValidator;
-
     private final OrgTypeValidator orgTypeValidator;
 
+    private final SuperiorValidator superiorValidator;
+
     @Autowired
-    OrgValidator(TenantRepository tenantRepository, OrgTypeRepository orgTypeRepository, OrgRepository orgRepository, EmpRepository empRepository, TenantValidator tenantValidator, OrgTypeValidator orgTypeValidator) {
-        this.tenantRepository = tenantRepository;
+    OrgValidator(OrgTypeRepository orgTypeRepository, OrgRepository orgRepository, EmpRepository empRepository, TenantValidator tenantValidator, OrgTypeValidator orgTypeValidator, SuperiorValidator superiorValidator) {
         this.orgTypeRepository = orgTypeRepository;
         this.orgRepository = orgRepository;
         this.empRepository = empRepository;
         this.tenantValidator = tenantValidator;
         this.orgTypeValidator = orgTypeValidator;
+        this.superiorValidator = superiorValidator;
     }
 
     public void validate(OrgDto request) {
         tenantValidator.tenantShouldBeValid(request.getTenant());
         orgTypeValidator.validate(request.getTenant(), request.getOrgType());
-//        orgTypeShouldBeNotEmpty(request.getOrgType());
-//        orgTypeShouldBeValid(request.getTenant(), request.getOrgType());
+
+//        superiorCheck(request.getTenant(), request.getOrgType(), request.getSuperior());
+        superiorValidator.validate(request.getTenant(), request.getSuperior(), request.getOrgType());
+
         corporateShouldNotBeCreatdAlone(request.getOrgType());
-        superiorCheck(request.getTenant(), request.getOrgType(), request.getSuperior());
         orgLeaderShouldBeOnWorking(request.getTenant(), request.getLeader());
         orgShouldHaveName(request.getName());
         subOrgNameShouldNotBeDuplicated(request.getTenant(), request.getSuperior(), request.getName());
     }
 
-    private static void orgTypeShouldBeNotEmpty(String orgType) {
-        if (orgType.isEmpty()) {
-            throw new BusinessException("组织类别不能为空！");
-        }
-    }
-
     private static void corporateShouldNotBeCreatdAlone(String orgType) {
         if (orgType.equals("ENTP")) {
             throw new BusinessException("企业是在创建租户的时候创建好的，因此不能单独创建企业!");
-        }
-    }
-
-    private void orgTypeShouldBeValid(Long tenant, String orgType) {
-        if (!orgTypeRepository.existsByCodeAndStatus(tenant, orgType, OrgTypeStatus.EFFECTIVE)) {
-            throw new BusinessException("'" + orgType + "'不是有效的组织类别代码！");
         }
     }
 

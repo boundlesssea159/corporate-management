@@ -1,6 +1,7 @@
 package com.application.corporatemanagement.domain.orgmng;
 
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -20,6 +21,5 @@ public class Org {
     private Long createdBy;
     private LocalDateTime lastUpdatedAt;
     private Long lastUpdatedBy;
-
 
 }
