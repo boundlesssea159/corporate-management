@@ -18,20 +18,24 @@ public class OrgValidator {
 
     private final TenantValidator tenantValidator;
 
+    private final OrgTypeValidator orgTypeValidator;
+
     @Autowired
-    OrgValidator(TenantRepository tenantRepository, OrgTypeRepository orgTypeRepository, OrgRepository orgRepository, EmpRepository empRepository, TenantValidator tenantValidator) {
+    OrgValidator(TenantRepository tenantRepository, OrgTypeRepository orgTypeRepository, OrgRepository orgRepository, EmpRepository empRepository, TenantValidator tenantValidator, OrgTypeValidator orgTypeValidator) {
         this.tenantRepository = tenantRepository;
         this.orgTypeRepository = orgTypeRepository;
         this.orgRepository = orgRepository;
         this.empRepository = empRepository;
         this.tenantValidator = tenantValidator;
+        this.orgTypeValidator = orgTypeValidator;
     }
 
     public void validate(OrgDto request) {
         tenantValidator.tenantShouldBeValid(request.getTenant());
-        orgTypeShouldBeNotEmpty(request.getOrgType());
+        orgTypeValidator.validate(request.getTenant(), request.getOrgType());
+//        orgTypeShouldBeNotEmpty(request.getOrgType());
+//        orgTypeShouldBeValid(request.getTenant(), request.getOrgType());
         corporateShouldNotBeCreatdAlone(request.getOrgType());
-        orgTypeShouldBeValid(request.getTenant(), request.getOrgType());
         superiorCheck(request.getTenant(), request.getOrgType(), request.getSuperior());
         orgLeaderShouldBeOnWorking(request.getTenant(), request.getLeader());
         orgShouldHaveName(request.getName());

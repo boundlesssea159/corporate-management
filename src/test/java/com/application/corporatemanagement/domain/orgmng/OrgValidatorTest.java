@@ -8,7 +8,6 @@ import com.application.corporatemanagement.domain.tenantmng.TenantRepository;
 import com.application.corporatemanagement.domain.tenantmng.TenantStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import java.util.Optional;
@@ -24,6 +23,7 @@ class OrgValidatorTest {
     protected Org superiorOrg;
     protected OrgDto orgDto;
     protected TenantValidator tenantValidator;
+    protected OrgTypeValidator orgTypeValidator;
     private OrgValidator orgValidator;
 
     private TenantRepository tenantRepository;
@@ -36,43 +36,30 @@ class OrgValidatorTest {
 
     @BeforeEach
     void setUp() {
-        tenantRepository = Mockito.mock(TenantRepository.class);
-        orgTypeRepository = Mockito.mock(OrgTypeRepository.class);
-        orgRepository = Mockito.mock(OrgRepository.class);
-        empRepository = Mockito.mock(EmpRepository.class);
+        tenantRepository = mock(TenantRepository.class);
+        orgTypeRepository = mock(OrgTypeRepository.class);
+        orgRepository = mock(OrgRepository.class);
+        empRepository = mock(EmpRepository.class);
         tenantValidator = mock(TenantValidator.class);
+        orgTypeValidator = mock(OrgTypeValidator.class);
+
         orgDto = mockOrgDto();
         stub();
         when(empRepository.existsByIdAndStatus(orgDto.getTenant(), orgDto.getLeader(), EmpStatus.REGULAR, EmpStatus.PROBATION)).thenReturn(true);
         when(orgRepository.existsBySuperiorAndName(orgDto.getTenant(), orgDto.getSuperior(), orgDto.getName())).thenReturn(false);
-        orgValidator = new OrgValidator(tenantRepository, orgTypeRepository, orgRepository, empRepository, tenantValidator);
+        orgValidator = new OrgValidator(tenantRepository, orgTypeRepository, orgRepository, empRepository, tenantValidator, orgTypeValidator);
     }
 
     private void stub() {
         normalOrgStub = new NormalOrgStub(mockOrgDto());
-        normalOrgStub
-                .assignName("normal_org")
-                .assignOrgType("DEVGRP")
-                .stub();
+        normalOrgStub.assignName("normal_org").assignOrgType("DEVGRP").stub();
         OrgDto orgDtoFroSuperior = mockOrgDto();
         superiorOrgStub = new SuperiorOrgStub(mockOrgDto());
-        superiorOrgStub
-                .assignId(orgDtoFroSuperior.getSuperior())
-                .assignOrgType("DEVCENT")
-                .assignName("superior_org")
-                .stub();
+        superiorOrgStub.assignId(orgDtoFroSuperior.getSuperior()).assignOrgType("DEVCENT").assignName("superior_org").stub();
     }
 
     private OrgDto mockOrgDto() {
-        return OrgDto.builder()
-                .name("org")
-                .tenant(1L)
-                .leader(2L)
-                .superior(3L)
-                .id(4L)
-                .orgType("DEVGRP")
-                .status("effective")
-                .build();
+        return OrgDto.builder().name("org").tenant(1L).leader(2L).superior(3L).id(4L).orgType("DEVGRP").status("effective").build();
     }
 
 
@@ -120,22 +107,9 @@ class OrgValidatorTest {
         }
 
         void stub() {
-            superiorOrg = Org.builder()
-                    .id(request.getSuperior())
-                    .name(request.getName())
-                    .tenantId(request.getTenant())
-                    .orgType(request.getOrgType())
-                    .status(request.getStatus())
-                    .build();
+            superiorOrg = Org.builder().id(request.getSuperior()).name(request.getName()).tenantId(request.getTenant()).orgType(request.getOrgType()).status(request.getStatus()).build();
             when(orgRepository.findByIdAndStatus(superiorOrg.getTenantId(), superiorOrg.getId(), OrgStatus.EFFECTIVE)).thenReturn(Optional.of(superiorOrg));
-            when(orgTypeRepository
-                    .findByCodeAndStatus(superiorOrg.getTenantId(), superiorOrg.getOrgType(), OrgTypeStatus.EFFECTIVE))
-                    .thenReturn(
-                            Optional.of(
-                                    OrgType.builder()
-                                            .code(superiorOrg.getOrgType())
-                                            .build())
-                    );
+            when(orgTypeRepository.findByCodeAndStatus(superiorOrg.getTenantId(), superiorOrg.getOrgType(), OrgTypeStatus.EFFECTIVE)).thenReturn(Optional.of(OrgType.builder().code(superiorOrg.getOrgType()).build()));
         }
     }
 
@@ -150,26 +124,15 @@ class OrgValidatorTest {
     }
 
     @Test
-    void should_throw_exception_if_org_type_is_empty() {
-        orgDto.setOrgType("");
-        assertThrowException();
-    }
-
-    @Test
     void should_throw_exception_if_corporate_created_alone() {
         orgDto.setOrgType("ENTP");
         assertThrowException();
     }
 
-    @Test
-    void should_throw_exception_if_org_type_is_invalid() {
-        when(orgTypeRepository.existsByCodeAndStatus(orgDto.getTenant(), orgDto.getOrgType(), OrgTypeStatus.EFFECTIVE)).thenReturn(false);
-        assertThrowException();
-    }
 
     @Test
-    void should_throw_exception_if_superior_is_not_valid() {
-        when(orgRepository.findByIdAndStatus(orgDto.getTenant(), orgDto.getSuperior(), OrgStatus.EFFECTIVE)).thenReturn(Optional.empty());
+    void should_throw_exception_if_org_type_check_fail() {
+        doThrow(BusinessException.class).when(orgTypeValidator).validate(any(), any());
         assertThrowException();
     }
 
@@ -177,6 +140,12 @@ class OrgValidatorTest {
     void should_throw_exception_if_superior_org_type_is_invalid() {
         when(orgTypeRepository.findByCodeAndStatus(superiorOrg.getTenantId(), superiorOrg.getOrgType(), OrgTypeStatus.EFFECTIVE)).thenReturn(Optional.empty());
         assertThrows(DirtyDataException.class, () -> orgValidator.validate(orgDto));
+    }
+
+    @Test
+    void should_throw_exception_if_superior_is_not_valid() {
+        when(orgRepository.findByIdAndStatus(orgDto.getTenant(), orgDto.getSuperior(), OrgStatus.EFFECTIVE)).thenReturn(Optional.empty());
+        assertThrowException();
     }
 
     @Test
