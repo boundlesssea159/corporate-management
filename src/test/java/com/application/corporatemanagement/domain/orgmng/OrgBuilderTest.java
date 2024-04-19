@@ -6,18 +6,21 @@ import com.application.corporatemanagement.domain.common.validator.TenantValidat
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 
-class OrgValidatorTest {
+class OrgBuilderTest {
+
+
     protected OrgDto orgDto;
     protected TenantValidator tenantValidator;
     protected OrgTypeValidator orgTypeValidator;
     protected SuperiorValidator superiorValidator;
     protected OrgLeaderValidator orgLeaderValidator;
     protected OrgNameValidator orgNameValidator;
-    private OrgValidator orgValidator;
+    private OrgBuilder orgBuilder;
 
     @BeforeEach
     void setUp() {
@@ -27,7 +30,7 @@ class OrgValidatorTest {
         orgLeaderValidator = mock(OrgLeaderValidator.class);
         orgNameValidator = mock(OrgNameValidator.class);
         orgDto = mockOrgDto();
-        orgValidator = new OrgValidator(tenantValidator, orgTypeValidator, superiorValidator, orgLeaderValidator, orgNameValidator);
+        orgBuilder = new OrgBuilder(tenantValidator, orgTypeValidator, superiorValidator, orgLeaderValidator, orgNameValidator);
     }
 
     private OrgDto mockOrgDto() {
@@ -66,6 +69,25 @@ class OrgValidatorTest {
     }
 
     private void assertThrowException() {
-        assertThrows(BusinessException.class, () -> orgValidator.validate(orgDto));
+        assertThrows(BusinessException.class, () -> orgBuilder.build());
     }
+
+    @Test
+    void should_create_org() {
+        Org org = orgBuilder
+                .name("name")
+                .orgType("type")
+                .status("status")
+                .leader(1L)
+                .tenant(2L)
+                .superior(3L)
+                .build();
+        assertEquals("name", org.getName());
+        assertEquals("type", org.getOrgType());
+        assertEquals("status", org.getStatus());
+        assertEquals(1L, org.getLeaderId());
+        assertEquals(2L, org.getTenantId());
+        assertEquals(3L, org.getSuperiorId());
+    }
+
 }

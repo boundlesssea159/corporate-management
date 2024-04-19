@@ -8,25 +8,24 @@ import java.util.Optional;
 
 @Service
 public class OrgService {
-
     private final OrgRepository orgRepository;
-
-    private final OrgValidator orgValidator;
+    private final OrgBuilderFactory orgBuilderFactory;
 
     @Autowired
-    public OrgService(OrgRepository orgRepository, OrgValidator orgValidator) {
+    public OrgService(OrgRepository orgRepository, OrgBuilderFactory orgBuilderFactory) {
         this.orgRepository = orgRepository;
-        this.orgValidator = orgValidator;
+        this.orgBuilderFactory = orgBuilderFactory;
     }
 
     public Optional<Org> add(OrgDto request, Long userId) {
-        orgValidator.validate(request);
-        Org org = Org.builder()
+        OrgBuilder orgBuilder = orgBuilderFactory.create();
+        Org org = orgBuilder
                 .name(request.getName())
-                .tenantId(request.getTenant())
-                .leaderId(request.getLeader())
-                .superiorId(request.getSuperior())
                 .orgType(request.getOrgType())
+                .leader(request.getLeader())
+                .tenant(request.getTenant())
+                .status(request.getStatus())
+                .superior(request.getSuperior())
                 .build();
         return orgRepository.save(org, userId);
     }
