@@ -17,6 +17,7 @@ public class OrgTypeValidator {
     public void validate(Long tenant, String orgType) {
         orgTypeShouldBeNotEmpty(orgType);
         orgTypeShouldBeValid(tenant, orgType);
+        corporateShouldNotBeCreatdAlone(orgType);
     }
 
     private static void orgTypeShouldBeNotEmpty(String orgType) {
@@ -28,6 +29,12 @@ public class OrgTypeValidator {
     private void orgTypeShouldBeValid(Long tenant, String orgType) {
         if (!orgTypeRepository.existsByCodeAndStatus(tenant, orgType, OrgTypeStatus.EFFECTIVE)) {
             throw new BusinessException("'" + orgType + "'不是有效的组织类别代码！");
+        }
+    }
+
+    private void corporateShouldNotBeCreatdAlone(String orgType) {
+        if (orgType.equals("ENTP")) {
+            throw new BusinessException("企业是在创建租户的时候创建好的，因此不能单独创建企业!");
         }
     }
 }
