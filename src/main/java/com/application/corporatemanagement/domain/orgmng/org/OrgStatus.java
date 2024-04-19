@@ -1,4 +1,4 @@
-package com.application.corporatemanagement.domain.orgmng;
+package com.application.corporatemanagement.domain.orgmng.org;
 
 public enum OrgStatus {
     EFFECTIVE("1", "有效");

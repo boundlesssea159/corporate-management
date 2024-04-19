@@ -1,8 +1,9 @@
 package com.application.corporatemanagement.adapter.driven.persistence.orgmng;
 
 
-import com.application.corporatemanagement.domain.orgmng.Org;
-import com.application.corporatemanagement.domain.orgmng.OrgStatus;
+import com.application.corporatemanagement.domain.orgmng.org.Org;
+import com.application.corporatemanagement.domain.orgmng.org.OrgStatus;
+import com.application.corporatemanagement.domain.orgmng.org.OrgRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public class OrgRepositoryJdbc implements com.application.corporatemanagement.domain.orgmng.OrgRepository {
+public class OrgRepositoryJdbc implements OrgRepository {
 
     private final JdbcTemplate jdbcTemplate;
 

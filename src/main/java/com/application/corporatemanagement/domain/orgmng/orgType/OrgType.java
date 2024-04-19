@@ -1,4 +1,4 @@
-package com.application.corporatemanagement.domain.orgmng;
+package com.application.corporatemanagement.domain.orgmng.orgType;
 
 import lombok.Builder;
 import lombok.Getter;

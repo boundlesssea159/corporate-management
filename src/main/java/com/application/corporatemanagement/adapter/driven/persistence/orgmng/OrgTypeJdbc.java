@@ -1,8 +1,8 @@
 package com.application.corporatemanagement.adapter.driven.persistence.orgmng;
 
-import com.application.corporatemanagement.domain.orgmng.OrgType;
-import com.application.corporatemanagement.domain.orgmng.OrgTypeRepository;
-import com.application.corporatemanagement.domain.orgmng.OrgTypeStatus;
+import com.application.corporatemanagement.domain.orgmng.orgType.OrgType;
+import com.application.corporatemanagement.domain.orgmng.orgType.OrgTypeRepository;
+import com.application.corporatemanagement.domain.orgmng.org.OrgTypeStatus;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;

@@ -1,4 +1,4 @@
-package com.application.corporatemanagement.domain.orgmng;
+package com.application.corporatemanagement.domain.orgmng.org;
 
 import java.util.Optional;
 

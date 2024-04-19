@@ -1,4 +1,6 @@
-package com.application.corporatemanagement.domain.orgmng;
+package com.application.corporatemanagement.domain.orgmng.orgType;
+
+import com.application.corporatemanagement.domain.orgmng.org.OrgTypeStatus;
 
 import java.util.Optional;
 

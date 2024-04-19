@@ -1,4 +1,4 @@
-package com.application.corporatemanagement.domain.orgmng;
+package com.application.corporatemanagement.domain.orgmng.emp;
 
 public enum EmpStatus {
     REGULAR("1", "正式员工"),

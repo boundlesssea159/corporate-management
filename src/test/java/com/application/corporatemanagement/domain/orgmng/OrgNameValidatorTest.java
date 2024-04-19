@@ -1,6 +1,8 @@
 package com.application.corporatemanagement.domain.orgmng;
 
 import com.application.corporatemanagement.domain.common.exceptions.BusinessException;
+import com.application.corporatemanagement.domain.orgmng.org.validators.OrgNameValidator;
+import com.application.corporatemanagement.domain.orgmng.org.OrgRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

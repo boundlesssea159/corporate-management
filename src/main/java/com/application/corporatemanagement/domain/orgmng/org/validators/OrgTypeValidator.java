@@ -1,6 +1,8 @@
-package com.application.corporatemanagement.domain.orgmng;
+package com.application.corporatemanagement.domain.orgmng.org.validators;
 
 import com.application.corporatemanagement.domain.common.exceptions.BusinessException;
+import com.application.corporatemanagement.domain.orgmng.org.OrgTypeStatus;
+import com.application.corporatemanagement.domain.orgmng.orgType.OrgTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

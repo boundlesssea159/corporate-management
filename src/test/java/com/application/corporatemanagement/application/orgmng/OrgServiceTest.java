@@ -1,10 +1,10 @@
 package com.application.corporatemanagement.application.orgmng;
 
 import com.application.corporatemanagement.domain.common.exceptions.BusinessException;
-import com.application.corporatemanagement.domain.orgmng.Org;
-import com.application.corporatemanagement.domain.orgmng.OrgBuilder;
-import com.application.corporatemanagement.domain.orgmng.OrgBuilderFactory;
-import com.application.corporatemanagement.domain.orgmng.OrgRepository;
+import com.application.corporatemanagement.domain.orgmng.org.Org;
+import com.application.corporatemanagement.domain.orgmng.org.OrgBuilder;
+import com.application.corporatemanagement.domain.orgmng.org.OrgBuilderFactory;
+import com.application.corporatemanagement.domain.orgmng.org.OrgRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

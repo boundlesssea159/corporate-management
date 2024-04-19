@@ -1,6 +1,9 @@
 package com.application.corporatemanagement.application.orgmng;
 
-import com.application.corporatemanagement.domain.orgmng.*;
+import com.application.corporatemanagement.domain.orgmng.org.Org;
+import com.application.corporatemanagement.domain.orgmng.org.OrgBuilder;
+import com.application.corporatemanagement.domain.orgmng.org.OrgBuilderFactory;
+import com.application.corporatemanagement.domain.orgmng.org.OrgRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

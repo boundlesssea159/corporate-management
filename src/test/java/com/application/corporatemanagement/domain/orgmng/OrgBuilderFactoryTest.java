@@ -1,6 +1,11 @@
 package com.application.corporatemanagement.domain.orgmng;
 
 import com.application.corporatemanagement.domain.common.validator.TenantValidator;
+import com.application.corporatemanagement.domain.orgmng.org.*;
+import com.application.corporatemanagement.domain.orgmng.org.validators.OrgLeaderValidator;
+import com.application.corporatemanagement.domain.orgmng.org.validators.OrgNameValidator;
+import com.application.corporatemanagement.domain.orgmng.org.validators.OrgTypeValidator;
+import com.application.corporatemanagement.domain.orgmng.org.validators.SuperiorValidator;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
