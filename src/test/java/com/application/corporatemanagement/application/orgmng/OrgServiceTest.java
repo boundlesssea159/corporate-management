@@ -62,9 +62,13 @@ class OrgServiceTest {
         UpdateOrgRequest updateOrgDto = UpdateOrgRequest.builder().id(1L).tenant(2L).name("updated name").superior(3L).build();
         Org org = Org.builder().id(1L).tenantId(2L).build();
         when(orgRepository.findById(updateOrgDto.getTenant(), updateOrgDto.getId())).thenReturn(Optional.of(org));
-        Org updatedOrg = Org.builder().id(1L).tenantId(2L).name("updated name").superior(3L).build();
-        when(orgHandler.update(org, "updated name", 3L)).thenReturn(updatedOrg);
-        when(orgRepository.update(updatedOrg, userId)).thenReturn(Optional.of(
+        doAnswer(invocation -> {
+            Object argumentOne = invocation.getArgument(0);
+            assert argumentOne instanceof Org;
+            ((Org) argumentOne).name(invocation.getArgument(1));
+            return null;
+        }).when(orgHandler).update(org, "updated name", 3L);
+        when(orgRepository.update(org, userId)).thenReturn(Optional.of(
                 Org.builder().id(1L).tenantId(2L).name("updated name").superior(3L).build()
         ));
         Optional<OrgResponse> optionalOrgResponse = orgService.update(updateOrgDto, userId);

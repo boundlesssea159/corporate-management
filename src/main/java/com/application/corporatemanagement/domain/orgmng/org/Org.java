@@ -20,4 +20,9 @@ public class Org {
     private Long createdBy;
     private LocalDateTime lastUpdatedAt;
     private Long lastUpdatedBy;
+
+    public Org name(String name){
+        this.name = name;
+        return this;
+    }
 }

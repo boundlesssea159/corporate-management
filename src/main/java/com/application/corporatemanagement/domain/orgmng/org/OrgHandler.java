@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 public class OrgHandler {
 
 
-    public Org update(final Org org, String name, Long superior) {
-        return null;
+    public void update(Org org, String name, Long superior) {
     }
 }
