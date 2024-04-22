@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 @Builder
-public class OrgDto {
+public class CreateOrgRequest {
     @JsonProperty("id")
     private Long id;
     @JsonProperty("name")

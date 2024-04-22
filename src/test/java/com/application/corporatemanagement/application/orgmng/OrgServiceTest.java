@@ -1,10 +1,7 @@
 package com.application.corporatemanagement.application.orgmng;
 
 import com.application.corporatemanagement.domain.common.exceptions.BusinessException;
-import com.application.corporatemanagement.domain.orgmng.org.Org;
-import com.application.corporatemanagement.domain.orgmng.org.OrgBuilder;
-import com.application.corporatemanagement.domain.orgmng.org.OrgBuilderFactory;
-import com.application.corporatemanagement.domain.orgmng.org.OrgRepository;
+import com.application.corporatemanagement.domain.orgmng.org.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -19,14 +16,15 @@ class OrgServiceTest {
     protected OrgRepository orgRepository;
     protected OrgBuilder orgBuilder;
     protected OrgBuilderFactory orgBuilderFactory;
+    protected OrgHandler orgHandler;
     private OrgService orgService;
     private final Long userId = 1L;
 
-    private OrgDto orgDto;
+    private CreateOrgRequest orgDto;
 
     @BeforeEach
     void setUp() {
-        orgDto = OrgDto.builder().name("org").build();
+        orgDto = CreateOrgRequest.builder().name("org").build();
         orgRepository = Mockito.mock(OrgRepository.class);
         orgBuilder = Mockito.mock(OrgBuilder.class);
         when(orgBuilder.orgType(orgDto.getOrgType())).thenReturn(orgBuilder);
@@ -37,7 +35,8 @@ class OrgServiceTest {
         when(orgBuilder.superior(orgDto.getSuperior())).thenReturn(orgBuilder);
         orgBuilderFactory = mock(OrgBuilderFactory.class);
         when(orgBuilderFactory.create()).thenReturn(orgBuilder);
-        orgService = new OrgService(orgRepository, orgBuilderFactory);
+        orgHandler = Mockito.mock(OrgHandler.class);
+        orgService = new OrgService(orgRepository, orgBuilderFactory, orgHandler);
     }
 
     @Test
@@ -53,8 +52,32 @@ class OrgServiceTest {
                 .build();
         when(orgBuilder.build()).thenReturn(org);
         when(orgRepository.save(any(), any())).then(invocation -> Optional.of(invocation.getArgument(0)));
-        Optional<Org> result = orgService.add(orgDto, userId);
+        Optional<OrgResponse> result = orgService.add(orgDto, userId);
         assertTrue(result.isPresent());
         assertEquals(orgDto.getName(), result.get().getName());
     }
+
+    @Test
+    void should_update_org_success() {
+        UpdateOrgRequest updateOrgDto = UpdateOrgRequest.builder().id(1L).tenant(2L).name("updated name").superior(3L).build();
+        Org org = Org.builder().id(1L).tenantId(2L).build();
+        when(orgRepository.findById(updateOrgDto.getTenant(), updateOrgDto.getId())).thenReturn(Optional.of(org));
+        Org updatedOrg = Org.builder().id(1L).tenantId(2L).name("updated name").superior(3L).build();
+        when(orgHandler.update(org, "updated name", 3L)).thenReturn(updatedOrg);
+        when(orgRepository.update(updatedOrg, userId)).thenReturn(Optional.of(
+                Org.builder().id(1L).tenantId(2L).name("updated name").superior(3L).build()
+        ));
+        Optional<OrgResponse> optionalOrgResponse = orgService.update(updateOrgDto, userId);
+        assertTrue(optionalOrgResponse.isPresent());
+        OrgResponse orgResponse = optionalOrgResponse.get();
+        assertEquals("updated name", orgResponse.getName());
+        assertEquals(3L, orgResponse.getSuperior());
+    }
+
+//    @Test
+//    void should_throw_exception_if_org_is_not_exist() {
+//
+//    }
+
+
 }

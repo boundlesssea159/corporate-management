@@ -1,6 +1,6 @@
 package com.application.corporatemanagement.domain.orgmng;
 
-import com.application.corporatemanagement.application.orgmng.OrgDto;
+import com.application.corporatemanagement.application.orgmng.CreateOrgRequest;
 import com.application.corporatemanagement.domain.common.exceptions.BusinessException;
 import com.application.corporatemanagement.domain.common.validator.TenantValidator;
 import com.application.corporatemanagement.domain.orgmng.org.*;
@@ -19,7 +19,7 @@ import static org.mockito.Mockito.mock;
 class OrgBuilderTest {
 
 
-    protected OrgDto orgDto;
+    protected CreateOrgRequest orgDto;
     protected TenantValidator tenantValidator;
     protected OrgTypeValidator orgTypeValidator;
     protected SuperiorValidator superiorValidator;
@@ -38,13 +38,13 @@ class OrgBuilderTest {
         orgBuilder = new OrgBuilder(tenantValidator, orgTypeValidator, superiorValidator, orgLeaderValidator, orgNameValidator);
     }
 
-    private OrgDto mockOrgDto() {
-        return OrgDto.builder().name("org").tenant(1L).leader(2L).superior(3L).id(4L).orgType("DEVGRP").status("effective").build();
+    private CreateOrgRequest mockOrgDto() {
+        return CreateOrgRequest.builder().name("org").tenant(1L).leader(2L).superior(3L).id(4L).orgType("DEVGRP").status("effective").build();
     }
 
     @Test
     void should_throw_exception_if_check_tenant_fail() {
-        doThrow(BusinessException.class).when(tenantValidator).tenantShouldBeValid(orgDto.getTenant());
+        doThrow(BusinessException.class).when(tenantValidator).tenantShouldBeValid(any());
         assertThrowException();
     }
 
@@ -92,7 +92,7 @@ class OrgBuilderTest {
         assertEquals("status", org.getStatus());
         assertEquals(1L, org.getLeaderId());
         assertEquals(2L, org.getTenantId());
-        assertEquals(3L, org.getSuperiorId());
+        assertEquals(3L, org.getSuperior());
     }
 
 }

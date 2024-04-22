@@ -1,7 +1,6 @@
 package com.application.corporatemanagement.domain.orgmng.org;
 
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -12,7 +11,7 @@ import java.time.LocalDateTime;
 public class Org {
     private Long id;
     private Long tenantId;
-    private Long superiorId;
+    private Long superior;
     private String orgType;
     private Long leaderId;
     private String name;

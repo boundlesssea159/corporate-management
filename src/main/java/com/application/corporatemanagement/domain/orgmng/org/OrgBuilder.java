@@ -72,7 +72,7 @@ public class OrgBuilder {
                 .name(name)
                 .orgType(orgType)
                 .tenantId(tenant)
-                .superiorId(superior)
+                .superior(superior)
                 .leaderId(leader)
                 .status(status)
                 .build();

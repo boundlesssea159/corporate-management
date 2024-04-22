@@ -8,4 +8,8 @@ public interface OrgRepository {
     Optional<Org> findByIdAndStatus(Long tenant, Long id, OrgStatus status);
 
     boolean existsBySuperiorAndName(Long tenant, Long id, String name);
+
+    Optional<Org> findById(Long tenant, Long id);
+
+    Optional<Org> update(Org org, Long userId);
 }
