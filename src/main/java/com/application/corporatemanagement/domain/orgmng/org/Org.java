@@ -15,14 +15,29 @@ public class Org {
     private String orgType;
     private Long leader;
     private String name;
-    private String status;
+    private OrgStatus status;
     private LocalDateTime createdAt;
     private Long createdBy;
     private LocalDateTime lastUpdatedAt;
     private Long lastUpdatedBy;
 
-    public Org name(String name){
+    public Org name(String name) {
         this.name = name;
+        return this;
+    }
+
+    public Org superior(Long superior) {
+        this.superior = superior;
+        return this;
+    }
+
+    public Org updator(Long updator) {
+        this.lastUpdatedBy = updator;
+        return this;
+    }
+
+    public Org updatedAt(LocalDateTime dateTime) {
+        this.lastUpdatedAt = dateTime;
         return this;
     }
 }

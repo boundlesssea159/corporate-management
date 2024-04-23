@@ -24,7 +24,7 @@ class OrgServiceTest {
 
     @BeforeEach
     void setUp() {
-        orgDto = CreateOrgRequest.builder().name("org").build();
+        orgDto = CreateOrgRequest.builder().name("org").status(OrgStatus.EFFECTIVE.getText()).build();
         orgRepository = Mockito.mock(OrgRepository.class);
         orgBuilder = Mockito.mock(OrgBuilder.class);
         when(orgBuilder.orgType(orgDto.getOrgType())).thenReturn(orgBuilder);
@@ -47,9 +47,7 @@ class OrgServiceTest {
 
     @Test
     void should_add_success_if_pass_verify() {
-        Org org = Org.builder()
-                .name(orgDto.getName())
-                .build();
+        Org org = Org.builder().name(orgDto.getName()).status(OrgStatus.EFFECTIVE).build();
         when(orgBuilder.build()).thenReturn(org);
         when(orgRepository.save(any(), any())).then(invocation -> Optional.of(invocation.getArgument(0)));
         Optional<OrgResponse> result = orgService.add(orgDto, userId);
@@ -60,16 +58,16 @@ class OrgServiceTest {
     @Test
     void should_update_org_success() {
         UpdateOrgRequest updateOrgDto = UpdateOrgRequest.builder().id(1L).tenant(2L).name("updated name").superior(3L).build();
-        Org org = Org.builder().id(updateOrgDto.getId()).tenant(updateOrgDto.getTenant()).build();
+        Org org = Org.builder().id(updateOrgDto.getId()).tenant(updateOrgDto.getTenant()).status(OrgStatus.EFFECTIVE).build();
         when(orgRepository.findById(updateOrgDto.getTenant(), updateOrgDto.getId())).thenReturn(Optional.of(org));
         doAnswer(invocation -> {
             Object argumentOne = invocation.getArgument(0);
             assert argumentOne instanceof Org;
             ((Org) argumentOne).name(invocation.getArgument(1));
             return null;
-        }).when(orgHandler).update(org, "updated name", updateOrgDto.getSuperior());
+        }).when(orgHandler).update(org, "updated name", updateOrgDto.getSuperior(), 10010L);
         when(orgRepository.update(org, userId)).thenReturn(Optional.of(
-                Org.builder().id(updateOrgDto.getId()).tenant(updateOrgDto.getTenant()).name("updated name").superior(updateOrgDto.getSuperior()).build()
+                Org.builder().id(updateOrgDto.getId()).tenant(updateOrgDto.getTenant()).name("updated name").superior(updateOrgDto.getSuperior()).status(OrgStatus.EFFECTIVE).build()
         ));
         Optional<OrgResponse> optionalOrgResponse = orgService.update(updateOrgDto, userId);
         assertTrue(optionalOrgResponse.isPresent());
@@ -78,10 +76,11 @@ class OrgServiceTest {
         assertEquals(updateOrgDto.getSuperior(), orgResponse.getSuperior());
     }
 
-//    @Test
-//    void should_throw_exception_if_org_is_not_exist() {
-//
-//    }
-
+    @Test
+    void should_throw_exception_if_org_is_not_exist() {
+        UpdateOrgRequest updateOrgDto = UpdateOrgRequest.builder().id(1L).tenant(2L).name("updated name").superior(3L).build();
+        when(orgRepository.findById(updateOrgDto.getId(), updateOrgDto.getTenant())).thenThrow(BusinessException.class);
+        assertThrows(BusinessException.class, () -> orgService.update(updateOrgDto, userId));
+    }
 
 }

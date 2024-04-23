@@ -74,7 +74,7 @@ public class OrgBuilder {
                 .tenant(tenant)
                 .superior(superior)
                 .leader(leader)
-                .status(status)
+                .status(OrgStatus.valueOf(status))
                 .build();
     }
 

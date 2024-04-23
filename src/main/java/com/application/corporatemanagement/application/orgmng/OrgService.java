@@ -36,7 +36,7 @@ public class OrgService {
     public Optional<OrgResponse> update(UpdateOrgRequest updateOrgDto, Long userId) {
         Org org = orgRepository.findById(updateOrgDto.getTenant(), updateOrgDto.getId())
                 .orElseThrow(() -> new BusinessException("组织（id=" + updateOrgDto.getId() + "）不存在！"));
-        orgHandler.update(org, updateOrgDto.getName(), updateOrgDto.getSuperior());
+        orgHandler.update(org, updateOrgDto.getName(), updateOrgDto.getSuperior(), 10010L);
         return orgRepository.update(org, userId).flatMap(OrgService::buildOrgResponse);
     }
 
@@ -48,7 +48,7 @@ public class OrgService {
                         .orgType(org.getOrgType())
                         .leader(org.getLeader())
                         .tenant(org.getTenant())
-                        .status(org.getStatus())
+                        .status(org.getStatus().getValue())
                         .superior(org.getSuperior())
                         .build()
         );

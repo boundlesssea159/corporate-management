@@ -1,7 +1,7 @@
 package com.application.corporatemanagement.domain.orgmng.org;
 
 public enum OrgStatus {
-    EFFECTIVE("1", "有效");
+    EFFECTIVE("1", "EFFECTIVE");
     private final String value;
 
     private final String text;
@@ -13,5 +13,9 @@ public enum OrgStatus {
 
     public String getValue() {
         return value;
+    }
+
+    public String getText() {
+        return text;
     }
 }

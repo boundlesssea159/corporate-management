@@ -1,4 +1,4 @@
-package com.application.corporatemanagement.domain.orgmng;
+package com.application.corporatemanagement.domain.orgmng.org;
 
 import com.application.corporatemanagement.application.orgmng.CreateOrgRequest;
 import com.application.corporatemanagement.domain.common.exceptions.BusinessException;
@@ -81,15 +81,15 @@ class OrgBuilderTest {
     void should_create_org() {
         Org org = orgBuilder
                 .name("name")
-                .orgType("type")
-                .status("status")
+                .orgType("DEV")
+                .status(OrgStatus.EFFECTIVE.getText())
                 .leader(1L)
                 .tenant(2L)
                 .superior(3L)
                 .build();
         assertEquals("name", org.getName());
-        assertEquals("type", org.getOrgType());
-        assertEquals("status", org.getStatus());
+        assertEquals("DEV", org.getOrgType());
+        assertEquals(OrgStatus.EFFECTIVE.getValue(), org.getStatus().getValue());
         assertEquals(1L, org.getLeader());
         assertEquals(2L, org.getTenant());
         assertEquals(3L, org.getSuperior());
