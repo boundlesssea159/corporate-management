@@ -10,10 +10,10 @@ import java.time.LocalDateTime;
 @Builder
 public class Org {
     private Long id;
-    private Long tenantId;
+    private Long tenant;
     private Long superior;
     private String orgType;
-    private Long leaderId;
+    private Long leader;
     private String name;
     private String status;
     private LocalDateTime createdAt;

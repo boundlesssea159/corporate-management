@@ -60,22 +60,22 @@ class OrgServiceTest {
     @Test
     void should_update_org_success() {
         UpdateOrgRequest updateOrgDto = UpdateOrgRequest.builder().id(1L).tenant(2L).name("updated name").superior(3L).build();
-        Org org = Org.builder().id(1L).tenantId(2L).build();
+        Org org = Org.builder().id(updateOrgDto.getId()).tenant(updateOrgDto.getTenant()).build();
         when(orgRepository.findById(updateOrgDto.getTenant(), updateOrgDto.getId())).thenReturn(Optional.of(org));
         doAnswer(invocation -> {
             Object argumentOne = invocation.getArgument(0);
             assert argumentOne instanceof Org;
             ((Org) argumentOne).name(invocation.getArgument(1));
             return null;
-        }).when(orgHandler).update(org, "updated name", 3L);
+        }).when(orgHandler).update(org, "updated name", updateOrgDto.getSuperior());
         when(orgRepository.update(org, userId)).thenReturn(Optional.of(
-                Org.builder().id(1L).tenantId(2L).name("updated name").superior(3L).build()
+                Org.builder().id(updateOrgDto.getId()).tenant(updateOrgDto.getTenant()).name("updated name").superior(updateOrgDto.getSuperior()).build()
         ));
         Optional<OrgResponse> optionalOrgResponse = orgService.update(updateOrgDto, userId);
         assertTrue(optionalOrgResponse.isPresent());
         OrgResponse orgResponse = optionalOrgResponse.get();
         assertEquals("updated name", orgResponse.getName());
-        assertEquals(3L, orgResponse.getSuperior());
+        assertEquals(updateOrgDto.getSuperior(), orgResponse.getSuperior());
     }
 
 //    @Test

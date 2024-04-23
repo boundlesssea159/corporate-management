@@ -1,4 +1,4 @@
-package com.application.corporatemanagement.domain.orgmng;
+package com.application.corporatemanagement.domain.orgmng.org.validators;
 
 import com.application.corporatemanagement.domain.common.exceptions.BusinessException;
 import com.application.corporatemanagement.domain.orgmng.emp.EmpRepository;

@@ -90,8 +90,8 @@ class OrgBuilderTest {
         assertEquals("name", org.getName());
         assertEquals("type", org.getOrgType());
         assertEquals("status", org.getStatus());
-        assertEquals(1L, org.getLeaderId());
-        assertEquals(2L, org.getTenantId());
+        assertEquals(1L, org.getLeader());
+        assertEquals(2L, org.getTenant());
         assertEquals(3L, org.getSuperior());
     }
 

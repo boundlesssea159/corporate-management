@@ -1,4 +1,4 @@
-package com.application.corporatemanagement.domain.orgmng;
+package com.application.corporatemanagement.domain.orgmng.org.validators;
 
 import com.application.corporatemanagement.domain.common.validator.TenantValidator;
 import com.application.corporatemanagement.domain.orgmng.org.*;
