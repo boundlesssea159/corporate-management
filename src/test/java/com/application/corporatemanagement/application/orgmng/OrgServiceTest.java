@@ -2,6 +2,7 @@ package com.application.corporatemanagement.application.orgmng;
 
 import com.application.corporatemanagement.domain.common.exceptions.BusinessException;
 import com.application.corporatemanagement.domain.orgmng.org.*;
+import com.application.corporatemanagement.domain.orgmng.org.validators.CancelValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -17,6 +18,7 @@ class OrgServiceTest {
     protected OrgBuilder orgBuilder;
     protected OrgBuilderFactory orgBuilderFactory;
     protected OrgHandler orgHandler;
+    protected CancelValidator cancelValidator;
     private OrgService orgService;
     private final Long userId = 1L;
 
@@ -24,19 +26,26 @@ class OrgServiceTest {
 
     @BeforeEach
     void setUp() {
-        orgDto = CreateOrgRequest.builder().name("org").status(OrgStatus.EFFECTIVE.getText()).build();
+        orgDto = CreateOrgRequest.builder().tenant(1L).id(100L).name("org").status(OrgStatus.EFFECTIVE.getText()).build();
         orgRepository = Mockito.mock(OrgRepository.class);
         orgBuilder = Mockito.mock(OrgBuilder.class);
+        stubOrgBuilder();
+        orgBuilderFactory = mock(OrgBuilderFactory.class);
+        when(orgBuilderFactory.create()).thenReturn(orgBuilder);
+        orgHandler = Mockito.mock(OrgHandler.class);
+        cancelValidator = Mockito.mock(CancelValidator.class);
+        orgService = new OrgService(orgRepository, orgBuilderFactory, orgHandler, cancelValidator);
+    }
+
+    private void stubOrgBuilder() {
         when(orgBuilder.orgType(orgDto.getOrgType())).thenReturn(orgBuilder);
         when(orgBuilder.leader(orgDto.getLeader())).thenReturn(orgBuilder);
         when(orgBuilder.name(orgDto.getName())).thenReturn(orgBuilder);
         when(orgBuilder.tenant(orgDto.getTenant())).thenReturn(orgBuilder);
         when(orgBuilder.status(orgDto.getStatus())).thenReturn(orgBuilder);
         when(orgBuilder.superior(orgDto.getSuperior())).thenReturn(orgBuilder);
-        orgBuilderFactory = mock(OrgBuilderFactory.class);
-        when(orgBuilderFactory.create()).thenReturn(orgBuilder);
-        orgHandler = Mockito.mock(OrgHandler.class);
-        orgService = new OrgService(orgRepository, orgBuilderFactory, orgHandler);
+        when(orgBuilder.creator(any())).thenReturn(orgBuilder);
+        when(orgBuilder.createAt(any())).thenReturn(orgBuilder);
     }
 
     @Test
@@ -49,7 +58,7 @@ class OrgServiceTest {
     void should_add_success_if_pass_verify() {
         Org org = Org.builder().name(orgDto.getName()).status(OrgStatus.EFFECTIVE).build();
         when(orgBuilder.build()).thenReturn(org);
-        when(orgRepository.save(any(), any())).then(invocation -> Optional.of(invocation.getArgument(0)));
+        when(orgRepository.save(any())).then(invocation -> Optional.of(invocation.getArgument(0)));
         Optional<OrgResponse> result = orgService.add(orgDto, userId);
         assertTrue(result.isPresent());
         assertEquals(orgDto.getName(), result.get().getName());
@@ -66,7 +75,7 @@ class OrgServiceTest {
             ((Org) argumentOne).name(invocation.getArgument(1));
             return null;
         }).when(orgHandler).update(org, "updated name", updateOrgDto.getSuperior(), 10010L);
-        when(orgRepository.update(org, userId)).thenReturn(Optional.of(
+        when(orgRepository.update(org)).thenReturn(Optional.of(
                 Org.builder().id(updateOrgDto.getId()).tenant(updateOrgDto.getTenant()).name("updated name").superior(updateOrgDto.getSuperior()).status(OrgStatus.EFFECTIVE).build()
         ));
         Optional<OrgResponse> optionalOrgResponse = orgService.update(updateOrgDto, userId);
@@ -79,8 +88,34 @@ class OrgServiceTest {
     @Test
     void should_throw_exception_if_org_is_not_exist() {
         UpdateOrgRequest updateOrgDto = UpdateOrgRequest.builder().id(1L).tenant(2L).name("updated name").superior(3L).build();
-        when(orgRepository.findById(updateOrgDto.getId(), updateOrgDto.getTenant())).thenThrow(BusinessException.class);
+        when(orgRepository.findById(updateOrgDto.getTenant(), updateOrgDto.getId())).thenThrow(BusinessException.class);
         assertThrows(BusinessException.class, () -> orgService.update(updateOrgDto, userId));
     }
 
+
+    @Test
+    void should_cancel_success() {
+        // todo should function return Org? since it is terrible that verify() is called too many times.
+        Org org = Mockito.mock(Org.class);
+        when(org.getId()).thenReturn(orgDto.getId());
+        when(orgRepository.findById(orgDto.getTenant(), orgDto.getId())).thenReturn(Optional.of(org));
+        assertEquals(orgDto.getId(), orgService.cancel(orgDto.getTenant(), orgDto.getId(), userId));
+        verify(org).updatedAt(any());
+        verify(org).cancel();
+        verify(org).updator(userId);
+        verify(orgRepository).update(org);
+    }
+
+
+    @Test
+    void should_throw_exception_if_org_not_exist() {
+        when(orgRepository.findById(orgDto.getTenant(), orgDto.getId())).thenThrow(BusinessException.class);
+        assertThrows(BusinessException.class, () -> orgService.cancel(orgDto.getTenant(), orgDto.getId(), userId));
+    }
+
+    @Test
+    void should_throw_exception_if_cancel_check_fail() {
+        doThrow(BusinessException.class).when(cancelValidator).validate();
+        assertThrows(BusinessException.class, () -> orgService.cancel(orgDto.getTenant(), orgDto.getId(), userId));
+    }
 }

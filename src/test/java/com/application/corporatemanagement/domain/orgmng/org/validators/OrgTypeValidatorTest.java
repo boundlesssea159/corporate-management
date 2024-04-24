@@ -2,7 +2,6 @@ package com.application.corporatemanagement.domain.orgmng.org.validators;
 
 import com.application.corporatemanagement.domain.common.exceptions.BusinessException;
 import com.application.corporatemanagement.domain.orgmng.org.OrgTypeStatus;
-import com.application.corporatemanagement.domain.orgmng.org.validators.OrgTypeValidator;
 import com.application.corporatemanagement.domain.orgmng.orgType.OrgTypeRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,8 +28,12 @@ class OrgTypeValidatorTest {
 
     @Test
     void should_throw_exception_if_org_type_is_invalid() {
-        when(orgTypeRepository.existsByCodeAndStatus(1L, "DEV", OrgTypeStatus.EFFECTIVE)).thenReturn(false);
         assertThrows(BusinessException.class, () -> orgTypeValidator.validate(1L, "DEV"));
     }
 
+    @Test
+    void should_throw_exception_if_ENTP_created_alone() {
+        when(orgTypeRepository.existsByCodeAndStatus(1L, "ENTP", OrgTypeStatus.EFFECTIVE)).thenReturn(true);
+        assertThrows(BusinessException.class, () -> orgTypeValidator.validate(1L, "ENTP"));
+    }
 }

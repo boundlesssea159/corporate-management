@@ -2,6 +2,7 @@ package com.application.corporatemanagement.domain.orgmng.org;
 
 import com.application.corporatemanagement.domain.orgmng.org.validators.OrgNameValidator;
 import com.application.corporatemanagement.domain.orgmng.org.validators.SuperiorValidator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -13,6 +14,7 @@ public class OrgHandler {
 
     private final SuperiorValidator superiorValidator;
 
+    @Autowired
     public OrgHandler(OrgNameValidator orgNameValidator, SuperiorValidator superiorValidator) {
         this.orgNameValidator = orgNameValidator;
         this.superiorValidator = superiorValidator;

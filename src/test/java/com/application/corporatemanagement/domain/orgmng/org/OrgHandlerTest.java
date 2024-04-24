@@ -20,7 +20,7 @@ class OrgHandlerTest {
 
     @BeforeEach
     void setUp() {
-        org = Org.builder().tenant(1L).name("org").superior(2L).orgType("DEV").build();
+        org = Org.builder().id(100L).tenant(1L).name("org").superior(2L).orgType("DEV").build();
         orgNameValidator = Mockito.mock(OrgNameValidator.class);
         superiorValidator = Mockito.mock(SuperiorValidator.class);
         orgHandler = new OrgHandler(orgNameValidator, superiorValidator);
@@ -44,5 +44,4 @@ class OrgHandlerTest {
         doThrow(BusinessException.class).when(superiorValidator).validate(org.getTenant(), org.getSuperior(), org.getOrgType());
         assertThrows(BusinessException.class, () -> orgHandler.update(org, "new name", 3L, 10010L));
     }
-
 }

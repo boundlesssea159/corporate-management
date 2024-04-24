@@ -24,9 +24,9 @@ public class OrgRepositoryJdbc implements OrgRepository {
     }
 
     @Override
-    public Optional<Org> save(Org org, Long userId) {
+    public Optional<Org> save(Org org) {
         String sql = "insert into " + table + " (`tenant_id`,`org_type_code`,`superior_id`,`leader_id`,`name`,`status`,`created_by`,`last_updated_by`) values(?,?,?,?,?,?,?,?)";
-        int update = jdbcTemplate.update(sql, org.getTenant(), org.getOrgType(), org.getSuperior(), org.getLeader(), org.getName(), Status.EFFECTIVE.getValue(), userId, userId);
+        int update = jdbcTemplate.update(sql, org.getTenant(), org.getOrgType(), org.getSuperior(), org.getLeader(), org.getName(), Status.EFFECTIVE.getValue(), org.getCreatedBy(), org.getLastUpdatedBy());
         if (update > 0) return Optional.of(org);
         return Optional.empty();
     }
@@ -47,7 +47,7 @@ public class OrgRepositoryJdbc implements OrgRepository {
     }
 
     @Override
-    public Optional<Org> update(Org org, Long userId) {
+    public Optional<Org> update(Org org) {
         return null;
     }
 }

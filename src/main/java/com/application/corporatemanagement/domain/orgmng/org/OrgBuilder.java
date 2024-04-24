@@ -8,6 +8,8 @@ import com.application.corporatemanagement.domain.orgmng.org.validators.Superior
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+
 @Component
 public class OrgBuilder {
     private final TenantValidator tenantValidator;
@@ -21,6 +23,8 @@ public class OrgBuilder {
     private Long superior;
     private String orgType;
     private String status;
+    private Long creator;
+    private LocalDateTime createAt;
 
     @Autowired
     public OrgBuilder(TenantValidator tenantValidator
@@ -66,6 +70,16 @@ public class OrgBuilder {
         return this;
     }
 
+    public OrgBuilder creator(Long creator) {
+        this.creator = creator;
+        return this;
+    }
+
+    public OrgBuilder createAt(LocalDateTime createAt) {
+        this.createAt = createAt;
+        return this;
+    }
+
     public Org build() {
         validate();
         return Org.builder()
@@ -75,6 +89,8 @@ public class OrgBuilder {
                 .superior(superior)
                 .leader(leader)
                 .status(OrgStatus.valueOf(status))
+                .createdBy(creator)
+                .createdAt(createAt)
                 .build();
     }
 

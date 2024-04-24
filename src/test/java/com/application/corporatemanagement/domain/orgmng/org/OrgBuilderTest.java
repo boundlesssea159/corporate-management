@@ -11,6 +11,8 @@ import com.application.corporatemanagement.domain.orgmng.org.validators.Superior
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
@@ -86,13 +88,15 @@ class OrgBuilderTest {
                 .leader(1L)
                 .tenant(2L)
                 .superior(3L)
+                .creator(10010L)
+                .createAt(LocalDateTime.now())
                 .build();
         assertEquals("name", org.getName());
         assertEquals("DEV", org.getOrgType());
-        assertEquals(OrgStatus.EFFECTIVE.getValue(), org.getStatus().getValue());
+        assertEquals(OrgStatus.EFFECTIVE, org.getStatus());
         assertEquals(1L, org.getLeader());
         assertEquals(2L, org.getTenant());
         assertEquals(3L, org.getSuperior());
+        assertEquals(10010L, org.getCreatedBy());
     }
-
 }
