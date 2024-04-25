@@ -1,5 +1,6 @@
 package com.application.corporatemanagement.domain.orgmng.org;
 
+import com.application.corporatemanagement.common.framework.AuditableEntity;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -31,6 +32,7 @@ public class Org {
         return this;
     }
 
+
     public Org superior(Long superior) {
         this.superior = superior;
         return this;
@@ -45,6 +47,7 @@ public class Org {
         this.lastUpdatedAt = dateTime;
         return this;
     }
+
 
     public void cancel() {
         this.status = OrgStatus.CANCELED;
