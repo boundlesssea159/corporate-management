@@ -2,7 +2,7 @@ package com.application.corporatemanagement.domain.orgmng.org;
 
 public enum OrgStatus {
     EFFECTIVE("1", "EFFECTIVE"),
-    CANCEL("2", "CANCEL");
+    CANCELED("2", "CANCELED");
     private final String value;
 
     private final String text;

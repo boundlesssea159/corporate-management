@@ -2,7 +2,6 @@ package com.application.corporatemanagement.domain.orgmng.org;
 
 import lombok.Builder;
 import lombok.Getter;
-import org.aspectj.weaver.ast.Or;
 
 import java.time.LocalDateTime;
 
@@ -48,6 +47,10 @@ public class Org {
     }
 
     public void cancel() {
-        this.status = OrgStatus.CANCEL;
+        this.status = OrgStatus.CANCELED;
+    }
+
+    public boolean isEffective() {
+        return status.equals(OrgStatus.EFFECTIVE);
     }
 }

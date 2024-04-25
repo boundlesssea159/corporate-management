@@ -18,7 +18,11 @@ public class OrgService {
     private final CancelValidator cancelValidator;
 
     @Autowired
-    public OrgService(OrgRepository orgRepository, OrgBuilderFactory orgBuilderFactory, OrgHandler orgHandler, CancelValidator cancelValidator) {
+    public OrgService(
+            OrgRepository orgRepository
+            , OrgBuilderFactory orgBuilderFactory
+            , OrgHandler orgHandler
+            , CancelValidator cancelValidator) {
         this.orgRepository = orgRepository;
         this.orgBuilderFactory = orgBuilderFactory;
         this.orgHandler = orgHandler;
@@ -67,10 +71,8 @@ public class OrgService {
 
     public Long cancel(Long tenant, Long id, long userId) {
         Org org = findOrg(tenant, id);
-        cancelValidator.validate();
-        org.updator(userId);
-        org.updatedAt(LocalDateTime.now());
-        org.cancel();
+        cancelValidator.validate(org);
+        org.updator(userId).updatedAt(LocalDateTime.now()).cancel();
         orgRepository.update(org);
         return org.getId();
     }

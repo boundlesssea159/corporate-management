@@ -98,6 +98,8 @@ class OrgServiceTest {
         // todo should function return Org? since it is terrible that verify() is called too many times.
         Org org = Mockito.mock(Org.class);
         when(org.getId()).thenReturn(orgDto.getId());
+        when(org.updator(any())).thenReturn(org);
+        when(org.updatedAt(any())).thenReturn(org);
         when(orgRepository.findById(orgDto.getTenant(), orgDto.getId())).thenReturn(Optional.of(org));
         assertEquals(orgDto.getId(), orgService.cancel(orgDto.getTenant(), orgDto.getId(), userId));
         verify(org).updatedAt(any());
@@ -115,7 +117,7 @@ class OrgServiceTest {
 
     @Test
     void should_throw_exception_if_cancel_check_fail() {
-        doThrow(BusinessException.class).when(cancelValidator).validate();
+        doThrow(BusinessException.class).when(cancelValidator).validate(any());
         assertThrows(BusinessException.class, () -> orgService.cancel(orgDto.getTenant(), orgDto.getId(), userId));
     }
 }
