@@ -3,7 +3,9 @@ package com.application.corporatemanagement.domain.orgmng.emp;
 public enum EmpStatus {
     REGULAR("1", "正式员工"),
 
-    PROBATION("2", "试用期员工");
+    PROBATION("2", "试用期员工"),
+
+    TERMINATED("3","终止");
 
     private final String value;
 

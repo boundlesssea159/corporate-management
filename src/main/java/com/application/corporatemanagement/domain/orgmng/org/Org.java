@@ -10,6 +10,8 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 public class Org {
+// todo extend AuditableEntity
+
     private Long id;
     private Long tenant;
     private Long superior;
