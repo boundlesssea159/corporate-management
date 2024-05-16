@@ -1,5 +1,8 @@
 package com.application.corporatemanagement.domain.orgmng.emp;
 
+import java.util.Arrays;
+import java.util.Optional;
+
 public enum SkillLevel {
 
     ADVANCED(1L, "ADVANCED");
@@ -18,5 +21,9 @@ public enum SkillLevel {
 
     public Long getValue() {
         return value;
+    }
+
+    public static Optional<SkillLevel> valueOf(Long id) {
+        return Arrays.stream(SkillLevel.values()).filter(skillLevel -> skillLevel.value.equals(id)).findFirst();
     }
 }

@@ -1,13 +1,16 @@
 package com.application.corporatemanagement.domain.orgmng.emp;
 
 import com.application.corporatemanagement.common.framework.AuditableEntity;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
+@SuperBuilder
 public class Emp extends AuditableEntity {
 
     private Long id;
@@ -18,7 +21,7 @@ public class Emp extends AuditableEntity {
 
     private Long orgId; // associate external object by id
 
-    private ArrayList<Long> postCodes; // any emp can work on several posts
+    private List<Long> postCodes; // any emp can work on several posts
 
     private List<Skill> skills; // associate inner object with real object
 
@@ -26,15 +29,24 @@ public class Emp extends AuditableEntity {
 
     private EmpStatus status;
 
-    public Emp(LocalDateTime createdAt, Long createdBy) {
-        super(createdAt, createdBy);
-    }
-
     public void becomeRegular() {
         status = EmpStatus.REGULAR;
     }
 
     public void terminate() {
         status = EmpStatus.TERMINATED;
+    }
+
+
+    public void addSkill(Skill skill) {
+        this.skills.add(skill);
+    }
+
+    public void addWorkExperience(WorkExperience workExperience) {
+        this.workExperiences.add(workExperience);
+    }
+
+    public void addPostCode(Long postCode) {
+        this.postCodes.add(postCode);
     }
 }

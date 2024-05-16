@@ -1,4 +1,4 @@
-package com.application.corporatemanagement.application.orgmng;
+package com.application.corporatemanagement.application.orgmng.emp;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -11,7 +11,6 @@ import java.util.List;
 
 @Data
 @Builder
-@AllArgsConstructor
 public class AddEmpRequest {
 
     @JsonProperty("tenant")

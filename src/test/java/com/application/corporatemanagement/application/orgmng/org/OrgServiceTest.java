@@ -1,5 +1,9 @@
-package com.application.corporatemanagement.application.orgmng;
+package com.application.corporatemanagement.application.orgmng.org;
 
+import com.application.corporatemanagement.application.orgmng.org.CreateOrgRequest;
+import com.application.corporatemanagement.application.orgmng.org.OrgResponse;
+import com.application.corporatemanagement.application.orgmng.org.OrgService;
+import com.application.corporatemanagement.application.orgmng.org.UpdateOrgRequest;
 import com.application.corporatemanagement.domain.common.exceptions.BusinessException;
 import com.application.corporatemanagement.domain.orgmng.org.*;
 import com.application.corporatemanagement.domain.orgmng.org.validators.CancelValidator;

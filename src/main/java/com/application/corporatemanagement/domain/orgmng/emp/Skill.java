@@ -1,11 +1,13 @@
 package com.application.corporatemanagement.domain.orgmng.emp;
 
 import com.application.corporatemanagement.common.framework.AuditableEntity;
-import lombok.Getter;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 
 @Getter
+@SuperBuilder
 public class Skill extends AuditableEntity {
 
     private Long id;

@@ -20,4 +20,7 @@ public class EmpJdbc implements EmpRepository {
         return Optional.empty();
     }
 
+    @Override
+    public void save(Emp emp, long userId) {
+    }
 }

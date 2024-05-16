@@ -1,9 +1,13 @@
 package com.application.corporatemanagement.common.framework;
 
-import lombok.Getter;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
+
 import java.time.LocalDateTime;
 
+
 @Getter
+@SuperBuilder
 public class AuditableEntity {
     protected LocalDateTime createdAt;
     protected Long createdBy;

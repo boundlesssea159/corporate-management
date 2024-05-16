@@ -1,7 +1,7 @@
 package com.application.corporatemanagement.adapter.driving.restful.orgmng;
 
-import com.application.corporatemanagement.application.orgmng.CreateOrgRequest;
-import com.application.corporatemanagement.application.orgmng.OrgService;
+import com.application.corporatemanagement.application.orgmng.org.CreateOrgRequest;
+import com.application.corporatemanagement.application.orgmng.org.OrgService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

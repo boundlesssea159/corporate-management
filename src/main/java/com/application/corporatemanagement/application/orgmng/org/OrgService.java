@@ -1,4 +1,4 @@
-package com.application.corporatemanagement.application.orgmng;
+package com.application.corporatemanagement.application.orgmng.org;
 
 import com.application.corporatemanagement.domain.common.exceptions.BusinessException;
 import com.application.corporatemanagement.domain.orgmng.org.*;

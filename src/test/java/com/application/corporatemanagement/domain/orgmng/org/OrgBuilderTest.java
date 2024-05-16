@@ -1,9 +1,8 @@
 package com.application.corporatemanagement.domain.orgmng.org;
 
-import com.application.corporatemanagement.application.orgmng.CreateOrgRequest;
+import com.application.corporatemanagement.application.orgmng.org.CreateOrgRequest;
 import com.application.corporatemanagement.domain.common.exceptions.BusinessException;
 import com.application.corporatemanagement.domain.common.validator.TenantValidator;
-import com.application.corporatemanagement.domain.orgmng.org.*;
 import com.application.corporatemanagement.domain.orgmng.org.validators.OrgLeaderValidator;
 import com.application.corporatemanagement.domain.orgmng.org.validators.OrgNameValidator;
 import com.application.corporatemanagement.domain.orgmng.org.validators.OrgTypeValidator;

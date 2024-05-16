@@ -1,4 +1,4 @@
-package com.application.corporatemanagement.application.orgmng;
+package com.application.corporatemanagement.application.orgmng.org;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
