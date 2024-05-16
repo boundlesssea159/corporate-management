@@ -7,7 +7,7 @@ public interface EmpRepository {
 
     boolean existsByIdAndStatus(Long tenant, Long id, EmpStatus... status);
 
-    Optional<List<Emp>> findOrgEmps(Long tenant, Long id);
+    Optional<List<Emp>> findOrgEmps(Long tenant, Long orgId);
 
     void save(Emp emp, long userId);
 }
