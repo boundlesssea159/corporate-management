@@ -18,10 +18,6 @@ public class Org extends AuditableEntity {
     private Long leader;
     private String name;
     private OrgStatus status;
-    private LocalDateTime createdAt;
-    private Long createdBy;
-    private LocalDateTime lastUpdatedAt;
-    private Long lastUpdatedBy;
 
     public Org id(Long id) {
         this.id = id;
