@@ -3,15 +3,14 @@ package com.application.corporatemanagement.domain.orgmng.org;
 import com.application.corporatemanagement.common.framework.AuditableEntity;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 
 
 @Getter
-@Builder
-public class Org {
-// todo extend AuditableEntity
-
+@SuperBuilder
+public class Org extends AuditableEntity {
     private Long id;
     private Long tenant;
     private Long superior;
