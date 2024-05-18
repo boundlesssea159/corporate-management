@@ -18,12 +18,6 @@ public class Org extends AuditableEntity {
     private Long leader;
     private String name;
     private OrgStatus status;
-
-    public Org id(Long id) {
-        this.id = id;
-        return this;
-    }
-
     public Org name(String name) {
         this.name = name;
         return this;
@@ -44,8 +38,6 @@ public class Org extends AuditableEntity {
         this.lastUpdatedAt = dateTime;
         return this;
     }
-
-
     public void cancel() {
         this.status = OrgStatus.CANCELED;
     }

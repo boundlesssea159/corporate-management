@@ -13,9 +13,22 @@ public class AuditableEntity {
     protected Long createdBy;
     protected LocalDateTime lastUpdatedAt;
     protected Long lastUpdatedBy;
+    protected ChangingStatus changingStatus = ChangingStatus.NEW;
 
     public AuditableEntity(LocalDateTime createdAt, Long createdBy) {
         this.createdAt = createdAt;
         this.createdBy = createdBy;
+    }
+
+    public void toUpdate() {
+        this.changingStatus = ChangingStatus.UPDATED;
+    }
+
+    public void toDelete() {
+        this.changingStatus = ChangingStatus.DELETED;
+    }
+
+    public void toUnChange() {
+        this.changingStatus = ChangingStatus.UNCHANGED;
     }
 }
