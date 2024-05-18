@@ -1,22 +1,27 @@
 package com.application.corporatemanagement.application.orgmng.emp;
 
 import com.application.corporatemanagement.domain.orgmng.emp.*;
+import com.application.corporatemanagement.domain.orgmng.org.validators.OrgValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.verify;
 
 class EmpAssemblerTest {
 
     private final AddEmpRequestParam addEmpRequestParam = new AddEmpRequestParam();
     protected EmpAssembler empAssembler;
+    protected OrgValidator orgValidator;
 
     @BeforeEach
     void setUp() {
-        empAssembler = new EmpAssembler();
+        orgValidator = Mockito.mock(OrgValidator.class);
+        empAssembler = new EmpAssembler(orgValidator);
     }
 
     static class AddEmpRequestParam {
@@ -42,6 +47,7 @@ class EmpAssemblerTest {
     void should_create_emp() {
         AddEmpRequest addEmpRequest = buildAddEmpRequest();
         Emp createdEmp = empAssembler.fromCreateRequest(addEmpRequest);
+        verify(orgValidator).check(addEmpRequestParam.tenant, addEmpRequestParam.orgId);
         assertEquals(addEmpRequest.getName(), createdEmp.getName());
         assertEquals(addEmpRequestParam.orgId, createdEmp.getOrgId());
         assertEquals(EmpStatus.REGULAR, createdEmp.getStatus());

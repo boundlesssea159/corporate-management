@@ -13,6 +13,7 @@ import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Repository
 public class EmpJdbc implements EmpRepository {
@@ -58,7 +59,7 @@ public class EmpJdbc implements EmpRepository {
                 , "name", emp.getName()
                 , "org_id", emp.getOrgId()
                 , "status", emp.getStatus().getValue()
-                , "post_codes", emp.convertPostCodesToString()
+                , "post_codes", emp.getPostCodes().stream().map(Object::toString).collect(Collectors.joining(","))
                 , "created_at", LocalDateTime.now()
                 , "created_by", userId
                 , "last_updated_at", LocalDateTime.now()

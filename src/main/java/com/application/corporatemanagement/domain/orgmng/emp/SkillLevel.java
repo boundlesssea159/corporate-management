@@ -4,8 +4,9 @@ import java.util.Arrays;
 import java.util.Optional;
 
 public enum SkillLevel {
-
-    ADVANCED(1L, "ADVANCED");
+    PRIMARY(1L, "PRIMARY"),
+    ADVANCED(2L, "ADVANCED"),
+    SENIOR(3L, "SENIOR");
     private final Long value;
 
     private final String text;

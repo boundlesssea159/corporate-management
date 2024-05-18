@@ -1,6 +1,8 @@
 package com.application.corporatemanagement.application.orgmng.emp;
 
 import com.application.corporatemanagement.domain.orgmng.emp.*;
+import com.application.corporatemanagement.domain.orgmng.org.validators.OrgValidator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,16 +15,25 @@ import java.util.Optional;
 @Service
 public class EmpAssembler {
 
+    private final OrgValidator orgValidator;
+
+    @Autowired
+    public EmpAssembler(OrgValidator orgValidator) {
+        this.orgValidator = orgValidator;
+    }
+
     public Emp fromCreateRequest(AddEmpRequest addEmpRequest) {
-        return Emp.builder()
+        this.orgValidator.check(addEmpRequest.getTenant(), addEmpRequest.getOrgId());
+        Emp emp = Emp.builder()
                 .tenant(addEmpRequest.tenant)
                 .orgId(addEmpRequest.orgId)
-                .skills(buildSkills(addEmpRequest))
-                .workExperiences(buildWorkExperiences(addEmpRequest))
                 .name(addEmpRequest.name)
                 .status(EmpStatus.REGULAR)
                 .postCodes(addEmpRequest.postCodes)
                 .build();
+        buildSkills(addEmpRequest).forEach(emp::addSkill);
+        buildWorkExperiences(addEmpRequest).forEach(emp::addWorkExperience);
+        return emp;
     }
 
     private List<Skill> buildSkills(AddEmpRequest addEmpRequest) {
