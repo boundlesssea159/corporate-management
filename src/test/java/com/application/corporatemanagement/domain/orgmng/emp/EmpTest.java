@@ -24,19 +24,7 @@ class EmpTest {
     @Test
     void should_throw_exception_if_add_work_experience_with_time_overlap() {
         Emp emp = Emp.builder().build();
-        emp.addWorkExperience(WorkExperience.builder()
-                .tenant(1L)
-                .startDate(LocalDate.now().minusYears(-5))
-                .endDate(LocalDate.now().minusYears(1))
-                .company("company")
-                .build());
-        assertThrows(BusinessException.class, () -> {
-            emp.addWorkExperience(WorkExperience.builder()
-                    .tenant(1L)
-                    .startDate(LocalDate.now().minusYears(3))
-                    .endDate(LocalDate.now().minusYears(2))
-                    .company("company")
-                    .build());
-        });
+        emp.addWorkExperience(LocalDate.now().minusYears(5),LocalDate.now().minusYears(1),"company",10010L);
+        assertThrows(BusinessException.class, () -> emp.addWorkExperience(LocalDate.now().minusYears(3),LocalDate.now().minusYears(2),"company",10010L));
     }
 }

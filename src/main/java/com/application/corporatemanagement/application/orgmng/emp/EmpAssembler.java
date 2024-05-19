@@ -31,7 +31,7 @@ public class EmpAssembler {
                 .postCodes(addEmpRequest.postCodes)
                 .build();
         buildSkills(emp, addEmpRequest, userId);
-        buildWorkExperiences(addEmpRequest).forEach(emp::addWorkExperience);
+        buildWorkExperiences(emp, addEmpRequest, userId);
         return emp;
     }
 
@@ -39,14 +39,7 @@ public class EmpAssembler {
         addEmpRequest.getSkills().forEach(skill -> emp.addSkill(skill.getSkillType(), skill.getSkillLevel(), skill.getDuration(), userId));
     }
 
-    private List<WorkExperience> buildWorkExperiences(AddEmpRequest addEmpRequest) {
-        return addEmpRequest.getWorkExperiences().stream().map(workExperience ->
-                (WorkExperience) WorkExperience.builder()
-                        .tenant(addEmpRequest.tenant)
-                        .company(workExperience.company)
-                        .startDate(workExperience.startDate)
-                        .endDate(workExperience.endDate)
-                        .build()
-        ).toList();
+    private void buildWorkExperiences(Emp emp, AddEmpRequest addEmpRequest, Long userId) {
+        addEmpRequest.getWorkExperiences().forEach(workExperience -> emp.addWorkExperience(workExperience.getStartDate(), workExperience.getEndDate(), workExperience.getCompany(), userId));
     }
 }

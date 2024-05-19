@@ -5,6 +5,7 @@ import com.application.corporatemanagement.domain.common.exceptions.BusinessExce
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +48,7 @@ public class Emp extends AuditableEntity {
         this.skills.add(skill);
     }
 
-    private Skill createSkill(Long skillType, Long skillLevel, Long duration, Long userId) {
+    protected Skill createSkill(Long skillType, Long skillLevel, Long duration, Long userId) {
         Optional<Skill> skill = SkillLevel.valueOf(skillLevel).map(skl -> {
             Skill newSkill = new Skill(tenant, skillType, LocalDateTime.now(), userId);
             newSkill.setDuration(duration);
@@ -66,10 +67,11 @@ public class Emp extends AuditableEntity {
         }
     }
 
-    public void addWorkExperience(WorkExperience workExperience) {
+    public void addWorkExperience(LocalDate startDate, LocalDate endDate, String company, Long userId) {
         if (this.workExperiences == null) {
             this.workExperiences = new ArrayList<>();
         }
+        WorkExperience workExperience = new WorkExperience(tenant, startDate, endDate, company, LocalDateTime.now(), userId);
         workExperienceTimeShouldNotOverlap(workExperience);
         this.workExperiences.add(workExperience);
     }
