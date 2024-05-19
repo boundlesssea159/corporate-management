@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * this is a different way to build domain aggregator (another way is builder,e.g. OrgBuilder)
@@ -22,7 +21,7 @@ public class EmpAssembler {
         this.orgValidator = orgValidator;
     }
 
-    public Emp fromCreateRequest(AddEmpRequest addEmpRequest) {
+    public Emp fromCreateRequest(AddEmpRequest addEmpRequest, Long userId) {
         this.orgValidator.check(addEmpRequest.getTenant(), addEmpRequest.getOrgId());
         Emp emp = Emp.builder()
                 .tenant(addEmpRequest.tenant)
@@ -31,23 +30,13 @@ public class EmpAssembler {
                 .status(EmpStatus.REGULAR)
                 .postCodes(addEmpRequest.postCodes)
                 .build();
-        buildSkills(addEmpRequest).forEach(emp::addSkill);
+        buildSkills(emp, addEmpRequest, userId);
         buildWorkExperiences(addEmpRequest).forEach(emp::addWorkExperience);
         return emp;
     }
 
-    private List<Skill> buildSkills(AddEmpRequest addEmpRequest) {
-        return addEmpRequest.getSkills().stream().map(skill ->
-                {
-                    Optional<SkillLevel> optionalSkillLevel = SkillLevel.valueOf(skill.skillLevel);
-                    return (Skill) optionalSkillLevel.map(skillLevel -> Skill.builder()
-                            .tenant(addEmpRequest.tenant)
-                            .skillType(skill.skillType)
-                            .skillLevel(skillLevel)
-                            .duration(skill.duration)
-                            .build()).orElse(null);
-                }
-        ).toList();
+    private void buildSkills(Emp emp, AddEmpRequest addEmpRequest, Long userId) {
+        addEmpRequest.getSkills().forEach(skill -> emp.addSkill(skill.getSkillType(), skill.getSkillLevel(), skill.getDuration(), userId));
     }
 
     private List<WorkExperience> buildWorkExperiences(AddEmpRequest addEmpRequest) {

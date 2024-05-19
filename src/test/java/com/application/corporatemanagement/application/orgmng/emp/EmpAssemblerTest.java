@@ -46,7 +46,7 @@ class EmpAssemblerTest {
     @Test
     void should_create_emp() {
         AddEmpRequest addEmpRequest = buildAddEmpRequest();
-        Emp createdEmp = empAssembler.fromCreateRequest(addEmpRequest);
+        Emp createdEmp = empAssembler.fromCreateRequest(addEmpRequest, 10010L);
         verify(orgValidator).check(addEmpRequestParam.tenant, addEmpRequestParam.orgId);
         assertEquals(addEmpRequest.getName(), createdEmp.getName());
         assertEquals(addEmpRequestParam.orgId, createdEmp.getOrgId());

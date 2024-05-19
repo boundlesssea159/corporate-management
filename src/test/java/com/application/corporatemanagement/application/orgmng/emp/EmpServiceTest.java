@@ -7,7 +7,6 @@ import org.mockito.Mockito;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 
 class EmpServiceTest {
@@ -26,7 +25,7 @@ class EmpServiceTest {
     void should_add_emp() {
         AddEmpRequest request = AddEmpRequest.builder().build();
         empService.addEmp(request, 10010L);
-        verify(empAssembler).fromCreateRequest(request);
+        verify(empAssembler).fromCreateRequest(request, 10010L);
         verify(empRepository).save(any(),anyLong());
     }
 

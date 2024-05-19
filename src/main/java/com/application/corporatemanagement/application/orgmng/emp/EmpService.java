@@ -18,6 +18,6 @@ public class EmpService {
     }
 
     public void addEmp(AddEmpRequest addEmpRequest, long userId) {
-        empRepository.save(assembler.fromCreateRequest(addEmpRequest), userId);
+        empRepository.save(assembler.fromCreateRequest(addEmpRequest, userId), userId);
     }
 }

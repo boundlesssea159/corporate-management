@@ -137,7 +137,7 @@ public class EmpJdbc implements EmpRepository {
         try {
             List<Emp> emps = new ArrayList<>();
             jdbcTemplate.query("select * from emp", (rs) -> {
-                Emp emp = Emp.builder()
+                EmpForRebuilding emp = EmpForRebuilding.builder()
                         .id(rs.getLong("id"))
                         .tenant(rs.getLong("tenant_id"))
                         .name(rs.getString("name"))

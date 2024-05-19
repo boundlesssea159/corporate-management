@@ -5,28 +5,30 @@ import com.application.corporatemanagement.domain.common.exceptions.BusinessExce
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Getter
 @SuperBuilder
 public class Emp extends AuditableEntity {
 
-    private Long id;
+    protected Long id;
 
-    private String name;
+    protected String name;
 
-    private Long tenant;
+    protected Long tenant;
 
-    private Long orgId; // associate external object by id
+    protected Long orgId; // associate external object by id
 
-    private List<Long> postCodes; // any emp can work on several posts
+    protected List<Long> postCodes; // any emp can work on several posts
 
-    private List<Skill> skills; // associate inner object with real object
+    protected List<Skill> skills; // associate inner object with real object
 
-    private List<WorkExperience> workExperiences;
+    protected List<WorkExperience> workExperiences;
 
-    private EmpStatus status;
+    protected EmpStatus status;
 
     public void becomeRegular() {
         status = EmpStatus.REGULAR;
@@ -36,13 +38,26 @@ public class Emp extends AuditableEntity {
         status = EmpStatus.TERMINATED;
     }
 
-
-    public void addSkill(Skill skill) {
+    public void addSkill(Long skillType, Long skillLevel, Long duration, Long userId) {
+        Skill skill = createSkill(skillType, skillLevel, duration, userId);
         if (this.skills == null) {
             this.skills = new ArrayList<>();
         }
         skillShouldNotBeDuplicated(skill);
         this.skills.add(skill);
+    }
+
+    private Skill createSkill(Long skillType, Long skillLevel, Long duration, Long userId) {
+        Optional<Skill> skill = SkillLevel.valueOf(skillLevel).map(skl -> {
+            Skill newSkill = new Skill(tenant, skillType, LocalDateTime.now(), userId);
+            newSkill.setDuration(duration);
+            newSkill.setLevel(skl);
+            return newSkill;
+        });
+        if (skill.isEmpty()) {
+            throw new BusinessException("技能类型不存在");
+        }
+        return skill.get();
     }
 
     private void skillShouldNotBeDuplicated(Skill skill) {

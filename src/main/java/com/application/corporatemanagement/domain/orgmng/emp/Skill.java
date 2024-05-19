@@ -20,7 +20,6 @@ public class Skill extends AuditableEntity {
 
     private Long duration;
 
-    // todo 将构造函数设置为包级别私有的目的：不让包外面直接创建它，尽可能引导应用程序通过聚合根或聚合服务创建它，从而尽可能保证相关的业务逻辑不被绕过
     Skill(Long tenant, Long skillType, LocalDateTime createdAt, Long createdBy) {
         super(createdAt, createdBy);
         this.tenant = tenant;

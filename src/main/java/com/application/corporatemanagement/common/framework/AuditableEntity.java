@@ -13,11 +13,12 @@ public class AuditableEntity {
     protected Long createdBy;
     protected LocalDateTime lastUpdatedAt;
     protected Long lastUpdatedBy;
-    protected ChangingStatus changingStatus = ChangingStatus.NEW;
+    protected ChangingStatus changingStatus;
 
     public AuditableEntity(LocalDateTime createdAt, Long createdBy) {
         this.createdAt = createdAt;
         this.createdBy = createdBy;
+        this.changingStatus = ChangingStatus.NEW;
     }
 
     public void toUpdate() {

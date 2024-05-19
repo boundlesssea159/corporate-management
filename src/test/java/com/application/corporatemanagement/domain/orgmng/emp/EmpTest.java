@@ -11,18 +11,14 @@ class EmpTest {
     @Test
     void should_throw_exception_if_add_same_skill() {
         Emp emp = Emp.builder().build();
-        emp.addSkill(Skill.builder()
-                .tenant(1L)
-                .skillType(1L)
-                .skillLevel(SkillLevel.ADVANCED)
-                .duration(5L)
-                .build());
-        assertThrows(BusinessException.class, () -> emp.addSkill(Skill.builder()
-                .tenant(1L)
-                .skillType(1L)
-                .skillLevel(SkillLevel.SENIOR)
-                .duration(3L)
-                .build()));
+        emp.addSkill(1L, 1L, 1L, 10010L);
+        assertThrows(BusinessException.class, () -> emp.addSkill(1L, 2L, 4L, 10010L));
+    }
+
+    @Test
+    void should_throw_exception_if_skill_level_is_invalid() {
+        Emp emp = Emp.builder().build();
+        assertThrows(BusinessException.class, () -> emp.addSkill(1L, 5L, 4L, 10010L));
     }
 
     @Test
