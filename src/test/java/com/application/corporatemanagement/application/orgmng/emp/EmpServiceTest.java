@@ -87,22 +87,6 @@ class EmpServiceTest {
                 empService.updateSkill(request, userId);
             });
         }
-
-        @Test
-        void should_throw_exception_if_skill_is_not_exist() {
-            Emp emp = Emp.builder().skills(List.of(Skill.builder().skillType(2L).skillLevel(SkillLevel.PRIMARY).duration(5L).build())).build();
-            when(empRepository.findById(tenantId, empId)).thenReturn(Optional.of(emp));
-            UpdateSkillRequest request = buildUpdateSkillRequest(skillType, 2L, 10L);
-            assertThrows(BusinessException.class, () -> empService.updateSkill(request, userId));
-        }
-
-        @Test
-        void should_throw_exception_if_skill_level_is_not_defined() {
-            Emp emp = Emp.builder().skills(List.of(Skill.builder().skillType(skillType).skillLevel(SkillLevel.PRIMARY).duration(5L).build())).build();
-            when(empRepository.findById(tenantId, empId)).thenReturn(Optional.of(emp));
-            UpdateSkillRequest request = buildUpdateSkillRequest(skillType, 5L, 10L);
-            assertThrows(BusinessException.class, () -> empService.updateSkill(request, userId));
-        }
     }
 
 

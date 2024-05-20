@@ -2,9 +2,7 @@ package com.application.corporatemanagement.domain.orgmng.emp;
 
 import com.application.corporatemanagement.domain.common.exceptions.BusinessException;
 import org.junit.jupiter.api.Test;
-
 import java.time.LocalDate;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class EmpTest {
@@ -24,7 +22,27 @@ class EmpTest {
     @Test
     void should_throw_exception_if_add_work_experience_with_time_overlap() {
         Emp emp = Emp.builder().build();
-        emp.addWorkExperience(LocalDate.now().minusYears(5),LocalDate.now().minusYears(1),"company",10010L);
-        assertThrows(BusinessException.class, () -> emp.addWorkExperience(LocalDate.now().minusYears(3),LocalDate.now().minusYears(2),"company",10010L));
+        emp.addWorkExperience(LocalDate.now().minusYears(5), LocalDate.now().minusYears(1), "company", 10010L);
+        assertThrows(BusinessException.class, () -> emp.addWorkExperience(LocalDate.now().minusYears(3), LocalDate.now().minusYears(2), "company", 10010L));
+    }
+
+    @Test
+    void should_throw_exception_if_emp_has_no_skills() {
+        Emp emp = Emp.builder().build();
+        assertThrows(BusinessException.class, () -> emp.updateSkill(1L, 2L, 5L, 10020L));
+    }
+
+    @Test
+    void should_throw_exception_if_updated_skill_is_not_exist() {
+        Emp emp = Emp.builder().build();
+        emp.addSkill(1L, 2L, 5L, 10010L);
+        assertThrows(BusinessException.class, () -> emp.updateSkill(2L, 2L, 5L, 10020L));
+    }
+
+    @Test
+    void should_throw_exception_if_skill_level_is_not_defined() {
+        Emp emp = Emp.builder().build();
+        emp.addSkill(1L, 2L, 5L, 10010L);
+        assertThrows(BusinessException.class, () -> emp.updateSkill(1L, 5L, 5L, 10020L));
     }
 }

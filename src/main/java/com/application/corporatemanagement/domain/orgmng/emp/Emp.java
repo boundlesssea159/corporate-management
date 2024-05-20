@@ -100,10 +100,14 @@ public class Emp extends AuditableEntity {
     }
 
     private Skill findSkill(Long skillType) {
+        BusinessException businessException = new BusinessException("员工不存在" + skillType.toString() + "技能");
+        if (this.skills == null) {
+            throw businessException;
+        }
         return this.skills.stream()
                 .filter(skl -> skl.getSkillType().equals(skillType))
                 .findFirst()
-                .orElseThrow(() -> new BusinessException("员工不存在" + skillType.toString() + "技能"));
+                .orElseThrow(() -> businessException);
     }
 
     private boolean needBeChanged(Skill skill, Long skillLevel, Long duration) {
