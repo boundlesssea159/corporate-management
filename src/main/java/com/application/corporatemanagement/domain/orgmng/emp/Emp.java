@@ -1,7 +1,6 @@
 package com.application.corporatemanagement.domain.orgmng.emp;
 
 import com.application.corporatemanagement.common.framework.AuditableEntity;
-import com.application.corporatemanagement.common.framework.ChangingStatus;
 import com.application.corporatemanagement.domain.common.exceptions.BusinessException;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
@@ -90,12 +89,13 @@ public class Emp extends AuditableEntity {
         this.postCodes.add(postCode);
     }
 
-    public void updateSkill(Long skillType, Long skillLevel, Long duration) {
+    public void updateSkill(Long skillType, Long skillLevel, Long duration, Long userId) {
         Skill skill = findSkill(skillType);
         if (!needBeChanged(skill, skillLevel, duration)) return;
         toUnChange();
         skill.setLevel(mapSkillLevel(skillLevel));
         skill.setDuration(duration);
+        skill.setLastUpdatedBy(userId);
         skill.toUpdate();
     }
 

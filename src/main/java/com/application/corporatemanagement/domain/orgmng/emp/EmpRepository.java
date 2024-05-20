@@ -13,5 +13,5 @@ public interface EmpRepository {
 
     Optional<Emp> findById(Long tenant, Long empId);
 
-    void update(Emp emp, Long userId);
+    void update(Emp emp);
 }

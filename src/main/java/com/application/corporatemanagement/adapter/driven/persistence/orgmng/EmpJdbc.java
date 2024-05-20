@@ -184,14 +184,13 @@ public class EmpJdbc implements EmpRepository {
     }
 
     @Override
-    public void update(Emp emp, Long userId) {
-        updateEmp(emp, userId);
+    public void update(Emp emp) {
+        updateEmp(emp);
         updateSkills(emp.getSkills());
         updateWorkExperiences(emp.getWorkExperiences());
     }
 
-    // todo instead of userId parameter,use creator or updator in emp
-    private void updateEmp(Emp emp, Long userId) {
+    private void updateEmp(Emp emp) {
         if (Objects.requireNonNull(emp.getChangingStatus()) == ChangingStatus.UPDATED) {
             this.jdbcTemplate.update("update emp "
                             + " set org_id = ?"
@@ -206,7 +205,7 @@ public class EmpJdbc implements EmpRepository {
                     , emp.getPostCodes().stream().map(Object::toString).collect(Collectors.joining(","))
                     , emp.getName()
                     , emp.getLastUpdatedAt()
-                    , userId);
+                    , emp.getLastUpdatedBy());
         }
     }
 

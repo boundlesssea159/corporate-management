@@ -25,8 +25,8 @@ public class EmpService {
 
     public boolean updateSkill(UpdateSkillRequest request, Long userId) {
         Emp emp = empRepository.findById(request.tenant, request.empId).orElseThrow(() -> new BusinessException("员工不存在"));
-        request.skills.forEach(skill -> emp.updateSkill(skill.getSkillType(), skill.getSkillLevel(), skill.getDuration()));
-        empRepository.update(emp, userId);
+        request.skills.forEach(skill -> emp.updateSkill(skill.getSkillType(), skill.getSkillLevel(), skill.getDuration(), userId));
+        empRepository.update(emp);
         return true;
     }
 }
