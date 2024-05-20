@@ -1,7 +1,7 @@
 package com.application.corporatemanagement.domain.orgmng.org.validators;
 
 import com.application.corporatemanagement.domain.common.exceptions.BusinessException;
-import com.application.corporatemanagement.domain.orgmng.emp.EmpRepository;
+import com.application.corporatemanagement.application.orgmng.emp.EmpRepository;
 import com.application.corporatemanagement.domain.orgmng.emp.EmpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

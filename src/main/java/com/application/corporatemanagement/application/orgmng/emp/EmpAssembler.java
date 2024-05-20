@@ -42,4 +42,8 @@ public class EmpAssembler {
     private void buildWorkExperiences(Emp emp, AddEmpRequest addEmpRequest, Long userId) {
         addEmpRequest.getWorkExperiences().forEach(workExperience -> emp.addWorkExperience(workExperience.getStartDate(), workExperience.getEndDate(), workExperience.getCompany(), userId));
     }
+
+    public EmpResponse toResponse(Emp emp) {
+        return null;
+    }
 }

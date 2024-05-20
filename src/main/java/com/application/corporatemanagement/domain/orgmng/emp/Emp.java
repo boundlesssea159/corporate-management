@@ -1,6 +1,7 @@
 package com.application.corporatemanagement.domain.orgmng.emp;
 
 import com.application.corporatemanagement.common.framework.AuditableEntity;
+import com.application.corporatemanagement.common.framework.ChangingStatus;
 import com.application.corporatemanagement.domain.common.exceptions.BusinessException;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
@@ -87,5 +88,30 @@ public class Emp extends AuditableEntity {
 
     public void addPostCode(Long postCode) {
         this.postCodes.add(postCode);
+    }
+
+    public void updateSkill(Long skillType, Long skillLevel, Long duration) {
+        Skill skill = findSkill(skillType);
+        if (!needBeChanged(skill, skillLevel, duration)) return;
+        toUnChange();
+        skill.setLevel(mapSkillLevel(skillLevel));
+        skill.setDuration(duration);
+        skill.toUpdate();
+    }
+
+    private Skill findSkill(Long skillType) {
+        return this.skills.stream()
+                .filter(skl -> skl.getSkillType().equals(skillType))
+                .findFirst()
+                .orElseThrow(() -> new BusinessException("员工不存在" + skillType.toString() + "技能"));
+    }
+
+    private boolean needBeChanged(Skill skill, Long skillLevel, Long duration) {
+        return !skill.getSkillLevel().getValue().equals(skillLevel) ||
+                !skill.getDuration().equals(duration);
+    }
+
+    private SkillLevel mapSkillLevel(Long skillLevel) {
+        return SkillLevel.valueOf(skillLevel).orElseThrow(() -> new BusinessException("技能等级" + skillLevel.toString() + "未被定义过"));
     }
 }

@@ -12,6 +12,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 
+
 class EmpAssemblerTest {
 
     private final AddEmpRequestParam addEmpRequestParam = new AddEmpRequestParam();
@@ -29,14 +30,14 @@ class EmpAssemblerTest {
         String name = "emp";
         Long orgId = 2L;
         List<Long> postCodes = List.of(1L);
-        List<AddEmpRequest.Skill> skills = List.of(AddEmpRequest.Skill.builder()
+        List<SkillRequest> skills = List.of(SkillRequest.builder()
                 .skillType(SkillType.JAVA.getValue())
                 .skillLevel(SkillLevel.ADVANCED.getValue())
                 .duration(5L)
                 .build());
 
-        List<AddEmpRequest.WorkExperience> workExperiences = List.of(
-                AddEmpRequest.WorkExperience.builder()
+        List<WorkExperienceRequest> workExperiences = List.of(
+                WorkExperienceRequest.builder()
                         .startDate(LocalDate.now().minusYears(5))
                         .endDate(LocalDate.now())
                         .company("company")
@@ -70,7 +71,7 @@ class EmpAssemblerTest {
     private void assertSkills(Emp emp) {
         assertEquals(addEmpRequestParam.skills.size(), emp.getSkills().size());
         emp.getSkills().forEach(skill -> {
-            AddEmpRequest.Skill expected = addEmpRequestParam.skills.stream().findFirst().get();
+            SkillRequest expected = addEmpRequestParam.skills.stream().findFirst().get();
             assertEquals(expected.getSkillType(), skill.getSkillType());
             assertEquals(expected.getSkillLevel(), skill.getSkillLevel().getValue());
             assertEquals(expected.getDuration(), skill.getDuration());
@@ -80,7 +81,7 @@ class EmpAssemblerTest {
     private void assertWorkExperiences(Emp emp) {
         assertEquals(addEmpRequestParam.workExperiences.size(), emp.getWorkExperiences().size());
         emp.getWorkExperiences().forEach(workExperience -> {
-            AddEmpRequest.WorkExperience expected = addEmpRequestParam.workExperiences.stream().findFirst().get();
+            WorkExperienceRequest expected = addEmpRequestParam.workExperiences.stream().findFirst().get();
             assertEquals(expected.getStartDate(), workExperience.getStartDate());
             assertEquals(expected.getEndDate(), workExperience.getEndDate());
             assertEquals(expected.getCompany(), workExperience.getCompany());

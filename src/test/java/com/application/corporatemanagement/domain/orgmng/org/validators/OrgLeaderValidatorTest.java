@@ -1,9 +1,8 @@
 package com.application.corporatemanagement.domain.orgmng.org.validators;
 
 import com.application.corporatemanagement.domain.common.exceptions.BusinessException;
-import com.application.corporatemanagement.domain.orgmng.emp.EmpRepository;
+import com.application.corporatemanagement.application.orgmng.emp.EmpRepository;
 import com.application.corporatemanagement.domain.orgmng.emp.EmpStatus;
-import com.application.corporatemanagement.domain.orgmng.org.validators.OrgLeaderValidator;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

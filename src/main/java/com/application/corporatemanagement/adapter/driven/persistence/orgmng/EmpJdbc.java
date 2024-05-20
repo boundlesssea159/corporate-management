@@ -2,6 +2,8 @@ package com.application.corporatemanagement.adapter.driven.persistence.orgmng;
 
 import com.application.corporatemanagement.adapter.driven.persistence.exceptions.QueryException;
 import com.application.corporatemanagement.adapter.driven.persistence.exceptions.ReflectException;
+import com.application.corporatemanagement.application.orgmng.emp.EmpRepository;
+import com.application.corporatemanagement.common.framework.ChangingStatus;
 import com.application.corporatemanagement.domain.orgmng.emp.*;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -114,7 +116,6 @@ public class EmpJdbc implements EmpRepository {
         }
     }
 
-    // todo the code of building emp can be reused
     public Optional<Emp> findById(Long id) {
         try {
             Emp emp = jdbcTemplate.queryForObject("select * from emp where id=?", (rs, rowNum) ->
@@ -175,5 +176,57 @@ public class EmpJdbc implements EmpRepository {
         } catch (Exception e) {
             throw new QueryException(e);
         }
+    }
+
+    @Override
+    public Optional<Emp> findById(Long tenant, Long empId) {
+        return Optional.empty();
+    }
+
+    @Override
+    public void update(Emp emp, Long userId) {
+        updateEmp(emp, userId);
+        updateSkills(emp.getSkills());
+        updateWorkExperiences(emp.getWorkExperiences());
+    }
+
+    // todo instead of userId parameter,use creator or updator in emp
+    private void updateEmp(Emp emp, Long userId) {
+        if (Objects.requireNonNull(emp.getChangingStatus()) == ChangingStatus.UPDATED) {
+            this.jdbcTemplate.update("update emp "
+                            + " set org_id = ?"
+                            + ", status = ?"
+                            + ", post_codes =? "
+                            + ", name = ?"
+                            + ", last_updated_at =?"
+                            + ", last_updated_by =? "
+                            + " where tenant_id = ? and id = ? ",
+                    emp.getOrgId()
+                    , emp.getStatus().getValue()
+                    , emp.getPostCodes().stream().map(Object::toString).collect(Collectors.joining(","))
+                    , emp.getName()
+                    , emp.getLastUpdatedAt()
+                    , userId);
+        }
+    }
+
+    private void updateSkills(List<Skill> skills) {
+        skills.forEach(skill -> {
+            switch (skill.getChangingStatus()) {
+                case UPDATED:
+                case NEW:
+                case DELETED:
+            }
+        });
+    }
+
+    private void updateWorkExperiences(List<WorkExperience> workExperiences) {
+        workExperiences.forEach(workExperience -> {
+            switch (workExperience.getChangingStatus()) {
+                case UPDATED:
+                case NEW:
+                case DELETED:
+            }
+        });
     }
 }

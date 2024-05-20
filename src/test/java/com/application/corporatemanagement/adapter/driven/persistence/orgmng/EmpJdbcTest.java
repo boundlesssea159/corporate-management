@@ -1,5 +1,6 @@
 package com.application.corporatemanagement.adapter.driven.persistence.orgmng;
 
+import com.application.corporatemanagement.common.framework.ChangingStatus;
 import com.application.corporatemanagement.domain.orgmng.emp.*;
 import org.junit.jupiter.api.Test;
 import org.mockito.Spy;
@@ -58,6 +59,7 @@ class EmpJdbcTest {
                         .skillLevel(SkillLevel.ADVANCED)
                         .duration(5L)
                         .build()))
+                .changingStatus(ChangingStatus.NEW)
                 .build();
         empJdbc.save(emp, 10010L);
         assertTrue(emp.getId() > 0);
