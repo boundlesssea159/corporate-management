@@ -35,10 +35,16 @@ public class Emp extends AggregateRoot {
     protected Long version;
 
     public void becomeRegular() {
+        if (!this.status.equals(EmpStatus.PROBATION)) {
+            throw new BusinessException("只有试用期的员工才能转正");
+        }
         status = EmpStatus.REGULAR;
     }
 
     public void terminate() {
+        if (this.status.equals(EmpStatus.TERMINATED)){
+            throw new BusinessException("已终止的员工不能再次终止");
+        }
         status = EmpStatus.TERMINATED;
     }
 
@@ -89,11 +95,6 @@ public class Emp extends AggregateRoot {
             }
         });
     }
-
-    public void addPostCode(Long postCode) {
-        this.postCodes.add(postCode);
-    }
-
     public void updateSkill(Long skillType, Long skillLevel, Long duration, Long userId) {
         Skill skill = findSkill(skillType);
         if (!needBeChanged(skill, skillLevel, duration)) return;

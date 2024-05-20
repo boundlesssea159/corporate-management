@@ -2,7 +2,9 @@ package com.application.corporatemanagement.domain.orgmng.emp;
 
 import com.application.corporatemanagement.domain.common.exceptions.BusinessException;
 import org.junit.jupiter.api.Test;
+
 import java.time.LocalDate;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class EmpTest {
@@ -44,5 +46,31 @@ class EmpTest {
         Emp emp = Emp.builder().build();
         emp.addSkill(1L, 2L, 5L, 10010L);
         assertThrows(BusinessException.class, () -> emp.updateSkill(1L, 5L, 5L, 10020L));
+    }
+
+    @Test
+    void should_throw_exception_if_become_regular_from_not_probation() {
+        Emp emp = Emp.builder().status(EmpStatus.REGULAR).build();
+        assertThrows(BusinessException.class, emp::becomeRegular);
+    }
+
+    @Test
+    void should_become_regular_from_probation() {
+        Emp emp = Emp.builder().status(EmpStatus.PROBATION).build();
+        emp.becomeRegular();
+        assertEquals(EmpStatus.REGULAR, emp.getStatus());
+    }
+
+    @Test
+    void should_throw_exception_if_become_terminated_from_terminated() {
+        Emp emp = Emp.builder().status(EmpStatus.TERMINATED).build();
+        assertThrows(BusinessException.class, emp::terminate);
+    }
+
+    @Test
+    void should_become_terminated_from_not_terminated() {
+        Emp emp = Emp.builder().status(EmpStatus.REGULAR).build();
+        emp.terminate();
+        assertEquals(EmpStatus.TERMINATED, emp.getStatus());
     }
 }

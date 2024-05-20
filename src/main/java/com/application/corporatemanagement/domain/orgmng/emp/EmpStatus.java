@@ -4,10 +4,8 @@ import java.util.Arrays;
 import java.util.Optional;
 
 public enum EmpStatus {
-    REGULAR("1", "正式员工"),
-
-    PROBATION("2", "试用期员工"),
-
+    PROBATION("1", "试用期员工"),
+    REGULAR("2", "正式员工"),
     TERMINATED("3", "终止");
 
     private final String value;
