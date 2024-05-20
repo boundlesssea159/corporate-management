@@ -32,8 +32,6 @@ public class Emp extends AggregateRoot {
 
     protected EmpStatus status;
 
-    protected Long version;
-
     public void becomeRegular() {
         if (!this.status.equals(EmpStatus.PROBATION)) {
             throw new BusinessException("只有试用期的员工才能转正");
