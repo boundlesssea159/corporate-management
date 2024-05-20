@@ -12,6 +12,8 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import java.lang.reflect.Field;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -116,59 +118,11 @@ public class EmpJdbc implements EmpRepository {
         }
     }
 
-    public Optional<Emp> findById(Long id) {
-        try {
-            Emp emp = jdbcTemplate.queryForObject("select * from emp where id=?", (rs, rowNum) ->
-                            Emp.builder()
-                                    .tenant(rs.getLong("tenant_id"))
-                                    .name(rs.getString("name"))
-                                    .orgId(rs.getLong("org"))
-                                    .status(EmpStatus.getBy(rs.getString("status")).get())
-                                    .build()
-                    , id);
-            return Optional.ofNullable(emp);
-        } catch (EmptyResultDataAccessException e) {
-            return Optional.empty();
-        } catch (Exception e) {
-            throw new QueryException(e);
-        }
-    }
-
     public Optional<List<Emp>> findAll() {
         try {
             List<Emp> emps = new ArrayList<>();
             jdbcTemplate.query("select * from emp", (rs) -> {
-                EmpForRebuilding emp = EmpForRebuilding.builder()
-                        .id(rs.getLong("id"))
-                        .tenant(rs.getLong("tenant_id"))
-                        .name(rs.getString("name"))
-                        .orgId(rs.getLong("org_id"))
-                        .status(EmpStatus.getBy(rs.getString("status")).get())
-                        .postCodes(Arrays.stream(rs.getString("post_codes").split(",")).map(Long::parseLong).toList())
-                        .build();
-
-                jdbcTemplate.query("select * from skills where emp_id = ?", (skillRow) -> {
-                    Skill skill = Skill.builder()
-                            .id(skillRow.getLong("id"))
-                            .tenant(skillRow.getLong("tenant_id"))
-                            .skillType(skillRow.getLong("skill_type"))
-                            .skillLevel(SkillLevel.valueOf(skillRow.getLong("skill_level")).get())
-                            .duration(skillRow.getLong("duration"))
-                            .build();
-                    emp.addSkill(skill);
-                }, emp.getId());
-
-                jdbcTemplate.query("select * from work_experiences where emp_id = ?", (workExperienceRow) -> {
-                    WorkExperience workExperience = WorkExperience.builder()
-                            .id(workExperienceRow.getLong("id"))
-                            .tenant(workExperienceRow.getLong("tenant_id"))
-                            .startDate(LocalDate.parse(workExperienceRow.getString("start_date")))
-                            .endDate(LocalDate.parse(workExperienceRow.getString("end_date")))
-                            .company(workExperienceRow.getString("company"))
-                            .build();
-                    emp.addWorkExperience(workExperience);
-                }, emp.getId());
-                emps.add(emp);
+                emps.add(buildEmpAggregator(rs));
             });
             return Optional.of(emps);
         } catch (DataAccessException e) {
@@ -178,9 +132,53 @@ public class EmpJdbc implements EmpRepository {
         }
     }
 
+    private List<Long> convertPostCodesFromStringToList(ResultSet rs) throws SQLException {
+        return Arrays.stream(rs.getString("post_codes").split(",")).map(Long::parseLong).toList();
+    }
+
     @Override
     public Optional<Emp> findById(Long tenant, Long empId) {
-        return Optional.empty();
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject("select * from emp where tenant_id = ? and id=?", (rs, rowNum) -> buildEmpAggregator(rs), tenant, empId));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        } catch (Exception e) {
+            throw new QueryException(e);
+        }
+    }
+
+    private EmpForRebuilding buildEmpAggregator(ResultSet rs) throws SQLException {
+        EmpForRebuilding empForRebuilding = EmpForRebuilding.builder()
+                .id(rs.getLong("id"))
+                .tenant(rs.getLong("tenant_id"))
+                .name(rs.getString("name"))
+                .orgId(rs.getLong("org_id"))
+                .status(EmpStatus.getBy(rs.getString("status")).get())
+                .postCodes(convertPostCodesFromStringToList(rs))
+                .build();
+
+        jdbcTemplate.query("select * from skills where emp_id = ?", (skillRow) -> {
+            Skill skill = Skill.builder()
+                    .id(skillRow.getLong("id"))
+                    .tenant(skillRow.getLong("tenant_id"))
+                    .skillType(skillRow.getLong("skill_type"))
+                    .skillLevel(SkillLevel.valueOf(skillRow.getLong("skill_level")).get())
+                    .duration(skillRow.getLong("duration"))
+                    .build();
+            empForRebuilding.addSkill(skill);
+        }, empForRebuilding.getId());
+
+        jdbcTemplate.query("select * from work_experiences where emp_id = ?", (workExperienceRow) -> {
+            WorkExperience workExperience = WorkExperience.builder()
+                    .id(workExperienceRow.getLong("id"))
+                    .tenant(workExperienceRow.getLong("tenant_id"))
+                    .startDate(LocalDate.parse(workExperienceRow.getString("start_date")))
+                    .endDate(LocalDate.parse(workExperienceRow.getString("end_date")))
+                    .company(workExperienceRow.getString("company"))
+                    .build();
+            empForRebuilding.addWorkExperience(workExperience);
+        }, empForRebuilding.getId());
+        return empForRebuilding;
     }
 
     @Override
