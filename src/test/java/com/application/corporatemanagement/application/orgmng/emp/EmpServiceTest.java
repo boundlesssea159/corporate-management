@@ -36,7 +36,7 @@ class EmpServiceTest {
         AddEmpRequest request = AddEmpRequest.builder().build();
         empService.addEmp(request, 10010L);
         verify(empAssembler).fromCreateRequest(request, 10010L);
-        verify(empRepository).save(any());
+        verify(empRepository).create(any());
     }
 
 

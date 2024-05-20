@@ -2,6 +2,7 @@ package com.application.corporatemanagement.adapter.driven.persistence.orgmng;
 
 import com.application.corporatemanagement.adapter.driven.persistence.exceptions.QueryException;
 import com.application.corporatemanagement.adapter.driven.persistence.exceptions.ReflectException;
+import com.application.corporatemanagement.domain.common.exceptions.BusinessException;
 import com.application.corporatemanagement.domain.orgmng.emp.EmpRepository;
 import com.application.corporatemanagement.common.framework.ChangingStatus;
 import com.application.corporatemanagement.domain.orgmng.emp.*;
@@ -58,7 +59,7 @@ public class EmpJdbc implements EmpRepository {
     }
 
     @Override
-    public void save(Emp emp) {
+    public void create(Emp emp) {
         Number createdId = empInsert.executeAndReturnKey(Map.of(
                 "tenant_id", emp.getTenant()
                 , "name", emp.getName()
@@ -69,6 +70,7 @@ public class EmpJdbc implements EmpRepository {
                 , "created_by", emp.getCreatedBy()
                 , "last_updated_at", LocalDateTime.now()
                 , "last_updated_by", emp.getLastUpdatedBy()
+                , "version", emp.getVersion()
         ));
         setId(emp, createdId);
         insertSkills(emp.getSkills(), emp.getTenant(), emp.getId());
@@ -160,6 +162,7 @@ public class EmpJdbc implements EmpRepository {
                 .orgId(rs.getLong("org_id"))
                 .status(EmpStatus.getBy(rs.getString("status")).get())
                 .postCodes(convertPostCodesFromStringToList(rs))
+                .version(rs.getLong("version"))
                 .build();
 
         jdbcTemplate.query("select * from skills where emp_id = ?", (skillRow) -> {
@@ -195,14 +198,15 @@ public class EmpJdbc implements EmpRepository {
 
     private void updateEmp(Emp emp) {
         if (Objects.requireNonNull(emp.getChangingStatus()) == ChangingStatus.UPDATED) {
-            this.jdbcTemplate.update("update emp "
+            int update = this.jdbcTemplate.update("update emp "
                             + " set org_id = ?"
+                            + ", version = version+1"
                             + ", status = ?"
                             + ", post_codes =? "
                             + ", name = ?"
                             + ", last_updated_at =?"
                             + ", last_updated_by =? "
-                            + " where tenant_id = ? and id = ? ",
+                            + " where tenant_id = ? and id = ? and version = ?",
                     emp.getOrgId()
                     , emp.getStatus().getValue()
                     , convertPostCodesFromListToString(emp)
@@ -210,7 +214,12 @@ public class EmpJdbc implements EmpRepository {
                     , emp.getLastUpdatedAt()
                     , emp.getLastUpdatedBy()
                     , emp.getTenant()
-                    , emp.getId());
+                    , emp.getId()
+                    , emp.getVersion()
+            );
+            if (update == 0) {
+                throw new BusinessException("不能同时刻修改员工信息");
+            }
         }
     }
 
@@ -253,7 +262,7 @@ public class EmpJdbc implements EmpRepository {
                         , workExperience.getCompany());
                 case NEW -> insertWorkExperience(workExperience.getTenant(), empId, workExperience);
                 case DELETED ->
-                        this.jdbcTemplate.execute(String.format("delete from work_experiences where tenant_id = '%s' and emp_id = '%s' and company= '%s'", workExperience.getTenant(), empId,workExperience.getCompany()));
+                        this.jdbcTemplate.execute(String.format("delete from work_experiences where tenant_id = '%s' and emp_id = '%s' and company= '%s'", workExperience.getTenant(), empId, workExperience.getCompany()));
             }
         });
     }

@@ -31,6 +31,7 @@ public class EmpAssembler {
                 .postCodes(addEmpRequest.postCodes)
                 .createdBy(userId)
                 .lastUpdatedBy(userId)
+                .version(System.currentTimeMillis())
                 .build();
         buildSkills(emp, addEmpRequest, userId);
         buildWorkExperiences(emp, addEmpRequest, userId);

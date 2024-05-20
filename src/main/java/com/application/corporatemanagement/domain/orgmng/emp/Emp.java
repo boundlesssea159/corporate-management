@@ -1,5 +1,6 @@
 package com.application.corporatemanagement.domain.orgmng.emp;
 
+import com.application.corporatemanagement.common.framework.AggregateRoot;
 import com.application.corporatemanagement.common.framework.AuditableEntity;
 import com.application.corporatemanagement.domain.common.exceptions.BusinessException;
 import lombok.Getter;
@@ -13,7 +14,7 @@ import java.util.Optional;
 
 @Getter
 @SuperBuilder
-public class Emp extends AuditableEntity {
+public class Emp extends AggregateRoot {
 
     protected Long id;
 
@@ -30,6 +31,8 @@ public class Emp extends AuditableEntity {
     protected List<WorkExperience> workExperiences;
 
     protected EmpStatus status;
+
+    protected Long version;
 
     public void becomeRegular() {
         status = EmpStatus.REGULAR;

@@ -80,7 +80,7 @@ class EmpJdbcTest {
     @Transactional
     void should_save_emp() {
         Emp emp = buildEmp();
-        empJdbc.save(emp);
+        empJdbc.create(emp);
         assertTrue(emp.getId() > 0);
         Optional<Emp> optionalEmp = empJdbc.findById(empParameter.tenant, emp.getId());
         assertTrue(optionalEmp.isPresent());
@@ -102,6 +102,7 @@ class EmpJdbcTest {
                 .changingStatus(empParameter.changingStatus)
                 .createdBy(empParameter.userId)
                 .lastUpdatedBy(empParameter.userId)
+                .version(System.currentTimeMillis())
                 .build();
     }
 
@@ -137,9 +138,10 @@ class EmpJdbcTest {
     @Test
     @Transactional
     void should_update_emp() {
-        Emp newEmp = buildEmpForUpdate();
-        empJdbc.save(newEmp);
-        Emp updatingEmp = buildUpdatingEmp(newEmp);
+        long version = System.currentTimeMillis();
+        Emp newEmp = newEmp(version);
+        empJdbc.create(newEmp);
+        Emp updatingEmp = updatingEmp(newEmp.getId(), version);
         empJdbc.update(updatingEmp);
         Optional<Emp> optionalEmp = empJdbc.findById(updatingEmp.getTenant(), updatingEmp.getId());
         assertTrue(optionalEmp.isPresent());
@@ -177,7 +179,7 @@ class EmpJdbcTest {
         });
     }
 
-    private Emp buildEmpForUpdate() {
+    private Emp newEmp(long version) {
         return Emp.builder()
                 .tenant(empParameter.tenant)
                 .name(empParameter.name)
@@ -205,12 +207,13 @@ class EmpJdbcTest {
                 .changingStatus(empParameter.changingStatus)
                 .createdBy(empParameter.userId)
                 .lastUpdatedBy(empParameter.userId)
+                .version(version)
                 .build();
     }
 
-    private Emp buildUpdatingEmp(Emp newEmp) {
+    private Emp updatingEmp(Long empId, long version) {
         return Emp.builder()
-                .id(newEmp.getId())
+                .id(empId)
                 .tenant(empParameter.tenant)
                 .name("updatedName")
                 .status(EmpStatus.TERMINATED)
@@ -272,6 +275,7 @@ class EmpJdbcTest {
                                 .changingStatus(ChangingStatus.DELETED)
                                 .build()
                 ))
+                .version(version)
                 .build();
     }
 }

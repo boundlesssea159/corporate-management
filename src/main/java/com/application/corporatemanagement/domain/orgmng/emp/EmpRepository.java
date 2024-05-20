@@ -9,7 +9,7 @@ public interface EmpRepository {
 
     Optional<List<Emp>> findOrgEmps(Long tenant, Long orgId);
 
-    void save(Emp emp);
+    void create(Emp emp);
 
     Optional<Emp> findById(Long tenant, Long empId);
 

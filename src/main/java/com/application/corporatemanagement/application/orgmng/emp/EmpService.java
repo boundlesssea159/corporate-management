@@ -21,7 +21,7 @@ public class EmpService {
     }
 
     public void addEmp(AddEmpRequest addEmpRequest, Long userId) {
-        empRepository.save(assembler.fromCreateRequest(addEmpRequest, userId));
+        empRepository.create(assembler.fromCreateRequest(addEmpRequest, userId));
     }
 
     @Transactional
