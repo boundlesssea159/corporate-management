@@ -5,6 +5,7 @@ import com.application.corporatemanagement.domain.orgmng.emp.Emp;
 import com.application.corporatemanagement.domain.orgmng.emp.EmpRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class EmpService {
@@ -23,6 +24,7 @@ public class EmpService {
         empRepository.save(assembler.fromCreateRequest(addEmpRequest, userId));
     }
 
+    @Transactional
     public boolean updateSkill(UpdateSkillRequest request, Long userId) {
         Emp emp = empRepository.findById(request.tenant, request.empId).orElseThrow(() -> new BusinessException("员工不存在"));
         request.skills.forEach(skill -> emp.updateSkill(skill.getSkillType(), skill.getSkillLevel(), skill.getDuration(), userId));
