@@ -39,11 +39,15 @@ class EmpJdbcTest {
 
         List<Long> postCodes = List.of(1L, 2L);
 
+        Long userId = 10010L;
+
         WorkExperience workExperience = WorkExperience.builder()
                 .tenant(1L)
                 .company("company")
-                .startDate(LocalDate.now().minusYears(-1))
+                .startDate(LocalDate.now().minusYears(1))
                 .endDate(LocalDate.now())
+                .createdBy(userId)
+                .lastUpdatedBy(userId)
                 .build();
 
         Skill skill = Skill.builder()
@@ -51,11 +55,12 @@ class EmpJdbcTest {
                 .skillType(2L)
                 .skillLevel(SkillLevel.ADVANCED)
                 .duration(5L)
+                .createdBy(userId)
+                .lastUpdatedBy(userId)
                 .build();
 
         ChangingStatus changingStatus = ChangingStatus.NEW;
 
-        Long userId = 10010L;
     }
 
     @Test
@@ -129,10 +134,144 @@ class EmpJdbcTest {
     }
 
 
-    // todo
     @Test
     @Transactional
     void should_update_emp() {
+        Emp newEmp = buildEmpForUpdate();
+        empJdbc.save(newEmp);
+        Emp updatingEmp = buildUpdatingEmp(newEmp);
+        empJdbc.update(updatingEmp);
+        Optional<Emp> optionalEmp = empJdbc.findById(updatingEmp.getTenant(), updatingEmp.getId());
+        assertTrue(optionalEmp.isPresent());
+        Emp emp = optionalEmp.get();
+        // assert emp
+        assertEquals("updatedName", emp.getName());
+        assertEquals(EmpStatus.TERMINATED, emp.getStatus());
+        assertEquals(5L, emp.getOrgId());
+        assertArrayEquals(List.of(3L, 4L).toArray(), emp.getPostCodes().toArray());
+        // assert skills
+        assertEquals(2, emp.getSkills().size());
+        assertTrue(emp.getSkills().stream().noneMatch(skill -> skill.getSkillType().equals(4L)));
+        emp.getSkills().forEach(skill -> {
+            if (skill.getSkillType().equals(2L)) {
+                assertEquals(SkillLevel.SENIOR, skill.getSkillLevel());
+                assertEquals(10L, skill.getDuration());
+            } else {
+                assertEquals(3L, skill.getSkillType());
+                assertEquals(SkillLevel.ADVANCED, skill.getSkillLevel());
+                assertEquals(1L, skill.getDuration());
+            }
+        });
+        // assert work experiences
+        assertEquals(2, emp.getWorkExperiences().size());
+        assertTrue(emp.getWorkExperiences().stream().noneMatch(workExperience -> workExperience.getCompany().equals("company3")));
+        emp.getWorkExperiences().forEach(workExperience -> {
+            if (workExperience.getCompany().equals("company")) {
+                assertEquals(LocalDate.now().minusYears(5), workExperience.getStartDate());
+                assertEquals(LocalDate.now().minusYears(1), workExperience.getEndDate());
+            } else {
+                assertEquals("company2", workExperience.getCompany());
+                assertEquals(LocalDate.now().minusYears(5), workExperience.getStartDate());
+                assertEquals(LocalDate.now(), workExperience.getEndDate());
+            }
+        });
+    }
 
+    private Emp buildEmpForUpdate() {
+        return Emp.builder()
+                .tenant(empParameter.tenant)
+                .name(empParameter.name)
+                .status(empParameter.empStatus)
+                .orgId(empParameter.orgId)
+                .postCodes(empParameter.postCodes)
+                .workExperiences(List.of(empParameter.workExperience, WorkExperience.builder()
+                        .tenant(empParameter.tenant)
+                        .company("company3")
+                        .startDate(LocalDate.now().minusYears(5))
+                        .endDate(LocalDate.now())
+                        .changingStatus(ChangingStatus.NEW)
+                        .createdBy(empParameter.userId)
+                        .lastUpdatedBy(empParameter.userId)
+                        .build()))
+                .skills(List.of(empParameter.skill, Skill.builder()
+                        .tenant(empParameter.tenant)
+                        .skillType(4L)
+                        .skillLevel(SkillLevel.SENIOR)
+                        .duration(10L)
+                        .changingStatus(ChangingStatus.NEW)
+                        .createdBy(empParameter.userId)
+                        .lastUpdatedBy(empParameter.userId)
+                        .build()))
+                .changingStatus(empParameter.changingStatus)
+                .createdBy(empParameter.userId)
+                .lastUpdatedBy(empParameter.userId)
+                .build();
+    }
+
+    private Emp buildUpdatingEmp(Emp newEmp) {
+        return Emp.builder()
+                .id(newEmp.getId())
+                .tenant(empParameter.tenant)
+                .name("updatedName")
+                .status(EmpStatus.TERMINATED)
+                .orgId(5L)
+                .postCodes(List.of(3L, 4L))
+                .changingStatus(ChangingStatus.UPDATED)
+                .createdBy(empParameter.userId)
+                .lastUpdatedBy(empParameter.userId)
+                .skills(List.of(
+                        // update
+                        Skill.builder()
+                                .tenant(empParameter.tenant)
+                                .skillType(empParameter.skill.getSkillType())
+                                .skillLevel(SkillLevel.SENIOR)
+                                .duration(10L)
+                                .changingStatus(ChangingStatus.UPDATED)
+                                .lastUpdatedBy(empParameter.userId)
+                                .build()
+                        // new
+                        , Skill.builder()
+                                .tenant(empParameter.tenant)
+                                .skillType(3L)
+                                .skillLevel(SkillLevel.ADVANCED)
+                                .duration(1L)
+                                .changingStatus(ChangingStatus.NEW)
+                                .createdBy(empParameter.userId)
+                                .lastUpdatedBy(empParameter.userId)
+                                .build()
+                        ,// delete
+                        Skill.builder()
+                                .tenant(empParameter.tenant)
+                                .skillType(4L)
+                                .changingStatus(ChangingStatus.DELETED)
+                                .build()))
+                .workExperiences(List.of(
+                        // update
+                        WorkExperience.builder()
+                                .tenant(empParameter.tenant)
+                                .company(empParameter.workExperience.getCompany())
+                                .startDate(LocalDate.now().minusYears(5))
+                                .endDate(LocalDate.now().minusYears(1))
+                                .changingStatus(ChangingStatus.UPDATED)
+                                .lastUpdatedBy(empParameter.userId)
+                                .build()
+                        // new
+                        , WorkExperience.builder()
+                                .tenant(empParameter.tenant)
+                                .company("company2")
+                                .startDate(LocalDate.now().minusYears(5))
+                                .endDate(LocalDate.now())
+                                .changingStatus(ChangingStatus.NEW)
+                                .createdBy(empParameter.userId)
+                                .lastUpdatedBy(empParameter.userId)
+                                .build()
+                        ,// delete
+                        WorkExperience.builder()
+                                .tenant(empParameter.tenant)
+                                .company("company3")
+                                .changingStatus(ChangingStatus.DELETED)
+                                .build()
+                ))
+                .build();
     }
 }

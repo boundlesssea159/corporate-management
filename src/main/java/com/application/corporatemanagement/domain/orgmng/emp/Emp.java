@@ -40,10 +40,11 @@ public class Emp extends AuditableEntity {
     }
 
     public void addSkill(Long skillType, Long skillLevel, Long duration, Long userId) {
-        Skill skill = createSkill(skillType, skillLevel, duration, userId);
         if (this.skills == null) {
             this.skills = new ArrayList<>();
         }
+        Skill skill = createSkill(skillType, skillLevel, duration, userId);
+        skill.setLastUpdatedBy(userId);
         skillShouldNotBeDuplicated(skill);
         this.skills.add(skill);
     }
@@ -72,6 +73,7 @@ public class Emp extends AuditableEntity {
             this.workExperiences = new ArrayList<>();
         }
         WorkExperience workExperience = new WorkExperience(tenant, startDate, endDate, company, LocalDateTime.now(), userId);
+        workExperience.setLastUpdatedBy(userId);
         workExperienceTimeShouldNotOverlap(workExperience);
         this.workExperiences.add(workExperience);
     }

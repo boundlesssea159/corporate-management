@@ -44,6 +44,7 @@ public class EmpJdbc implements EmpRepository {
                 .withTableName("work_experiences")
                 .usingGeneratedKeyColumns("id");
 
+
     }
 
     @Override
@@ -63,49 +64,53 @@ public class EmpJdbc implements EmpRepository {
                 , "name", emp.getName()
                 , "org_id", emp.getOrgId()
                 , "status", emp.getStatus().getValue()
-                , "post_codes", emp.getPostCodes().stream().map(Object::toString).collect(Collectors.joining(","))
+                , "post_codes", convertPostCodesFromListToString(emp)
                 , "created_at", LocalDateTime.now()
                 , "created_by", emp.getCreatedBy()
                 , "last_updated_at", LocalDateTime.now()
                 , "last_updated_by", emp.getLastUpdatedBy()
         ));
         setId(emp, createdId);
-        insertSkills(emp, emp.getCreatedBy());
-        insertWorkExperiences(emp, emp.getCreatedBy());
+        insertSkills(emp.getSkills(), emp.getTenant(), emp.getId());
+        insertWorkExperiences(emp.getWorkExperiences(), emp.getTenant(), emp.getId());
     }
 
-    private void insertSkills(Emp emp, Long userId) {
-        emp.getSkills().forEach(skill -> {
-            Number id = skillsInsert.executeAndReturnKey(Map.of(
-                    "tenant_id", emp.getTenant()
-                    , "emp_id", emp.getId()
-                    , "skill_type", skill.getSkillType()
-                    , "skill_level", skill.getSkillLevel().getValue()
-                    , "duration", skill.getDuration()
-                    , "created_at", LocalDateTime.now()
-                    , "created_by", userId
-                    , "last_updated_at", LocalDateTime.now()
-                    , "last_updated_by", userId
-            ));
-            setId(skill, id);
-        });
+    private void insertSkills(List<Skill> skills, Long tenant, Long empId) {
+        skills.forEach(skill -> insertSkill(tenant, empId, skill));
     }
 
-    private void insertWorkExperiences(Emp emp, long userId) {
-        emp.getWorkExperiences().forEach(workExperience -> {
-            Number id = workExperiencesInsert.executeAndReturnKey(Map.of(
-                    "tenant_id", emp.getTenant()
-                    , "emp_id", emp.getId()
-                    , "start_date", workExperience.getStartDate().toString()
-                    , "end_date", workExperience.getEndDate().toString()
-                    , "company", workExperience.getCompany()
-                    , "created_at", LocalDateTime.now()
-                    , "created_by", userId
-                    , "last_updated_at", LocalDateTime.now()
-                    , "last_updated_by", userId
-            ));
-            setId(workExperience, id);
-        });
+    private void insertSkill(Long tenant, Long empId, Skill skill) {
+        Number id = skillsInsert.executeAndReturnKey(Map.of(
+                "tenant_id", tenant
+                , "emp_id", empId
+                , "skill_type", skill.getSkillType()
+                , "skill_level", skill.getSkillLevel().getValue()
+                , "duration", skill.getDuration()
+                , "created_at", LocalDateTime.now()
+                , "created_by", skill.getCreatedBy()
+                , "last_updated_at", LocalDateTime.now()
+                , "last_updated_by", skill.getLastUpdatedBy()
+        ));
+        setId(skill, id);
+    }
+
+    private void insertWorkExperiences(List<WorkExperience> workExperiences, Long tenant, Long empId) {
+        workExperiences.forEach(workExperience -> insertWorkExperience(tenant, empId, workExperience));
+    }
+
+    private void insertWorkExperience(Long tenant, Long empId, WorkExperience workExperience) {
+        Number id = workExperiencesInsert.executeAndReturnKey(Map.of(
+                "tenant_id", tenant
+                , "emp_id", empId
+                , "start_date", workExperience.getStartDate().toString()
+                , "end_date", workExperience.getEndDate().toString()
+                , "company", workExperience.getCompany()
+                , "created_at", LocalDateTime.now()
+                , "created_by", workExperience.getCreatedBy()
+                , "last_updated_at", LocalDateTime.now()
+                , "last_updated_by", workExperience.getLastUpdatedBy()
+        ));
+        setId(workExperience, id);
     }
 
     private void setId(Object obj, Number createdId) {
@@ -184,8 +189,8 @@ public class EmpJdbc implements EmpRepository {
     @Override
     public void update(Emp emp) {
         updateEmp(emp);
-        updateSkills(emp.getSkills());
-        updateWorkExperiences(emp.getWorkExperiences());
+        updateSkills(emp.getSkills(), emp.getId());
+        updateWorkExperiences(emp.getWorkExperiences(), emp.getId());
     }
 
     private void updateEmp(Emp emp) {
@@ -200,29 +205,55 @@ public class EmpJdbc implements EmpRepository {
                             + " where tenant_id = ? and id = ? ",
                     emp.getOrgId()
                     , emp.getStatus().getValue()
-                    , emp.getPostCodes().stream().map(Object::toString).collect(Collectors.joining(","))
+                    , convertPostCodesFromListToString(emp)
                     , emp.getName()
                     , emp.getLastUpdatedAt()
-                    , emp.getLastUpdatedBy());
+                    , emp.getLastUpdatedBy()
+                    , emp.getTenant()
+                    , emp.getId());
         }
     }
 
-    private void updateSkills(List<Skill> skills) {
+    private String convertPostCodesFromListToString(Emp emp) {
+        return emp.getPostCodes().stream().map(Object::toString).collect(Collectors.joining(","));
+    }
+
+    private void updateSkills(List<Skill> skills, Long empId) {
         skills.forEach(skill -> {
             switch (skill.getChangingStatus()) {
-                case UPDATED:
-                case NEW:
-                case DELETED:
+                case UPDATED -> this.jdbcTemplate.update("update skills "
+                                + "set skill_level = ?"
+                                + ",duration = ?"
+                                + ",last_updated_by = ?"
+                                + " where tenant_id = ? and emp_id = ? and skill_type = ?"
+                        , skill.getSkillLevel().getValue()
+                        , skill.getDuration()
+                        , skill.getLastUpdatedBy()
+                        , skill.getTenant()
+                        , empId
+                        , skill.getSkillType());
+                case NEW -> this.insertSkill(skill.getTenant(), empId, skill);
+                case DELETED ->
+                        this.jdbcTemplate.execute(String.format("delete from skills where tenant_id = '%s' and emp_id = '%s' and skill_type='%s'", skill.getTenant(), empId, skill.getSkillType().toString()));
             }
         });
     }
 
-    private void updateWorkExperiences(List<WorkExperience> workExperiences) {
+    private void updateWorkExperiences(List<WorkExperience> workExperiences, Long empId) {
         workExperiences.forEach(workExperience -> {
             switch (workExperience.getChangingStatus()) {
-                case UPDATED:
-                case NEW:
-                case DELETED:
+                case UPDATED -> this.jdbcTemplate.update("update work_experiences "
+                                + "set start_date=?"
+                                + ",end_date=?"
+                                + " where tenant_id=? and emp_id=? and company=?"
+                        , workExperience.getStartDate()
+                        , workExperience.getEndDate()
+                        , workExperience.getTenant()
+                        , empId
+                        , workExperience.getCompany());
+                case NEW -> insertWorkExperience(workExperience.getTenant(), empId, workExperience);
+                case DELETED ->
+                        this.jdbcTemplate.execute(String.format("delete from work_experiences where tenant_id = '%s' and emp_id = '%s' and company= '%s'", workExperience.getTenant(), empId,workExperience.getCompany()));
             }
         });
     }
