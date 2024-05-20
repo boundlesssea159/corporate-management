@@ -60,8 +60,10 @@ class EmpJdbcTest {
                         .duration(5L)
                         .build()))
                 .changingStatus(ChangingStatus.NEW)
+                .createdBy(10010L)
+                .lastUpdatedBy(10010L)
                 .build();
-        empJdbc.save(emp, 10010L);
+        empJdbc.save(emp);
         assertTrue(emp.getId() > 0);
         Optional<List<Emp>> optionalEmps = empJdbc.findAll();
         assertTrue(optionalEmps.isPresent());

@@ -2,7 +2,7 @@ package com.application.corporatemanagement.adapter.driven.persistence.orgmng;
 
 import com.application.corporatemanagement.adapter.driven.persistence.exceptions.QueryException;
 import com.application.corporatemanagement.adapter.driven.persistence.exceptions.ReflectException;
-import com.application.corporatemanagement.application.orgmng.emp.EmpRepository;
+import com.application.corporatemanagement.domain.orgmng.emp.EmpRepository;
 import com.application.corporatemanagement.common.framework.ChangingStatus;
 import com.application.corporatemanagement.domain.orgmng.emp.*;
 import org.springframework.dao.DataAccessException;
@@ -55,7 +55,7 @@ public class EmpJdbc implements EmpRepository {
     }
 
     @Override
-    public void save(Emp emp, long userId) {
+    public void save(Emp emp) {
         Number createdId = empInsert.executeAndReturnKey(Map.of(
                 "tenant_id", emp.getTenant()
                 , "name", emp.getName()
@@ -63,13 +63,13 @@ public class EmpJdbc implements EmpRepository {
                 , "status", emp.getStatus().getValue()
                 , "post_codes", emp.getPostCodes().stream().map(Object::toString).collect(Collectors.joining(","))
                 , "created_at", LocalDateTime.now()
-                , "created_by", userId
+                , "created_by", emp.getCreatedBy()
                 , "last_updated_at", LocalDateTime.now()
-                , "last_updated_by", userId
+                , "last_updated_by", emp.getLastUpdatedBy()
         ));
         setId(emp, createdId);
-        insertSkills(emp, userId);
-        insertWorkExperiences(emp, userId);
+        insertSkills(emp, emp.getCreatedBy());
+        insertWorkExperiences(emp, emp.getCreatedBy());
     }
 
     private void insertSkills(Emp emp, Long userId) {

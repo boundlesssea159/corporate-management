@@ -1,7 +1,4 @@
-package com.application.corporatemanagement.application.orgmng.emp;
-
-import com.application.corporatemanagement.domain.orgmng.emp.Emp;
-import com.application.corporatemanagement.domain.orgmng.emp.EmpStatus;
+package com.application.corporatemanagement.domain.orgmng.emp;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,7 +9,7 @@ public interface EmpRepository {
 
     Optional<List<Emp>> findOrgEmps(Long tenant, Long orgId);
 
-    void save(Emp emp, long userId);
+    void save(Emp emp);
 
     Optional<Emp> findById(Long tenant, Long empId);
 

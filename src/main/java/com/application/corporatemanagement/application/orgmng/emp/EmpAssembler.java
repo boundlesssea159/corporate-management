@@ -29,6 +29,8 @@ public class EmpAssembler {
                 .name(addEmpRequest.name)
                 .status(EmpStatus.REGULAR)
                 .postCodes(addEmpRequest.postCodes)
+                .createdBy(userId)
+                .lastUpdatedBy(userId)
                 .build();
         buildSkills(emp, addEmpRequest, userId);
         buildWorkExperiences(emp, addEmpRequest, userId);

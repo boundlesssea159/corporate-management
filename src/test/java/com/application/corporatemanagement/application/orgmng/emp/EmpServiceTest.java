@@ -2,6 +2,7 @@ package com.application.corporatemanagement.application.orgmng.emp;
 
 import com.application.corporatemanagement.domain.common.exceptions.BusinessException;
 import com.application.corporatemanagement.domain.orgmng.emp.Emp;
+import com.application.corporatemanagement.domain.orgmng.emp.EmpRepository;
 import com.application.corporatemanagement.domain.orgmng.emp.Skill;
 import com.application.corporatemanagement.domain.orgmng.emp.SkillLevel;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,7 +14,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.junit.jupiter.api.Assertions.*;
@@ -36,7 +36,7 @@ class EmpServiceTest {
         AddEmpRequest request = AddEmpRequest.builder().build();
         empService.addEmp(request, 10010L);
         verify(empAssembler).fromCreateRequest(request, 10010L);
-        verify(empRepository).save(any(), anyLong());
+        verify(empRepository).save(any());
     }
 
 

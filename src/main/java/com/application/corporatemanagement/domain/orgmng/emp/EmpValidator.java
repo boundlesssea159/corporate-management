@@ -1,6 +1,5 @@
 package com.application.corporatemanagement.domain.orgmng.emp;
 
-import com.application.corporatemanagement.application.orgmng.emp.EmpRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

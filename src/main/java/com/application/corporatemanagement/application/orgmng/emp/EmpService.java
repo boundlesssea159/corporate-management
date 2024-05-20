@@ -2,6 +2,7 @@ package com.application.corporatemanagement.application.orgmng.emp;
 
 import com.application.corporatemanagement.domain.common.exceptions.BusinessException;
 import com.application.corporatemanagement.domain.orgmng.emp.Emp;
+import com.application.corporatemanagement.domain.orgmng.emp.EmpRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +20,7 @@ public class EmpService {
     }
 
     public void addEmp(AddEmpRequest addEmpRequest, Long userId) {
-        empRepository.save(assembler.fromCreateRequest(addEmpRequest, userId), userId);
+        empRepository.save(assembler.fromCreateRequest(addEmpRequest, userId));
     }
 
     public boolean updateSkill(UpdateSkillRequest request, Long userId) {
