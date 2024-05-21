@@ -1,7 +1,6 @@
 package com.application.corporatemanagement.domain.orgmng.emp;
 
 import com.application.corporatemanagement.common.framework.AggregateRoot;
-import com.application.corporatemanagement.common.framework.AuditableEntity;
 import com.application.corporatemanagement.domain.common.exceptions.BusinessException;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;

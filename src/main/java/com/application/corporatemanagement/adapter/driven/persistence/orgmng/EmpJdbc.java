@@ -3,6 +3,7 @@ package com.application.corporatemanagement.adapter.driven.persistence.orgmng;
 import com.application.corporatemanagement.adapter.driven.persistence.exceptions.QueryException;
 import com.application.corporatemanagement.adapter.driven.persistence.exceptions.ReflectException;
 import com.application.corporatemanagement.domain.common.exceptions.BusinessException;
+import com.application.corporatemanagement.domain.common.valueobjs.Duration;
 import com.application.corporatemanagement.domain.orgmng.emp.EmpRepository;
 import com.application.corporatemanagement.common.framework.ChangingStatus;
 import com.application.corporatemanagement.domain.orgmng.emp.*;
@@ -104,8 +105,8 @@ public class EmpJdbc implements EmpRepository {
         Number id = workExperiencesInsert.executeAndReturnKey(Map.of(
                 "tenant_id", tenant
                 , "emp_id", empId
-                , "start_date", workExperience.getStartDate().toString()
-                , "end_date", workExperience.getEndDate().toString()
+                , "start_date", workExperience.getDuration().getStartDate().toString()
+                , "end_date", workExperience.getDuration().getEndDate().toString()
                 , "company", workExperience.getCompany()
                 , "created_at", LocalDateTime.now()
                 , "created_by", workExperience.getCreatedBy()
@@ -180,8 +181,7 @@ public class EmpJdbc implements EmpRepository {
             WorkExperience workExperience = WorkExperience.builder()
                     .id(workExperienceRow.getLong("id"))
                     .tenant(workExperienceRow.getLong("tenant_id"))
-                    .startDate(LocalDate.parse(workExperienceRow.getString("start_date")))
-                    .endDate(LocalDate.parse(workExperienceRow.getString("end_date")))
+                    .duration(new Duration(LocalDate.parse(workExperienceRow.getString("start_date")), LocalDate.parse(workExperienceRow.getString("end_date"))))
                     .company(workExperienceRow.getString("company"))
                     .build();
             empForRebuilding.addWorkExperience(workExperience);
