@@ -73,4 +73,7 @@ class EmpTest {
         emp.terminate();
         assertEquals(EmpStatus.TERMINATED, emp.getStatus());
     }
+
+    // todo extract duration object
+
 }
