@@ -105,8 +105,8 @@ public class EmpJdbc implements EmpRepository {
         Number id = workExperiencesInsert.executeAndReturnKey(Map.of(
                 "tenant_id", tenant
                 , "emp_id", empId
-                , "start_date", workExperience.getDuration().getStartDate().toString()
-                , "end_date", workExperience.getDuration().getEndDate().toString()
+                , "start_date", workExperience.getDuration().startDate().toString()
+                , "end_date", workExperience.getDuration().endDate().toString()
                 , "company", workExperience.getCompany()
                 , "created_at", LocalDateTime.now()
                 , "created_by", workExperience.getCreatedBy()
@@ -129,9 +129,7 @@ public class EmpJdbc implements EmpRepository {
     public Optional<List<Emp>> findAll() {
         try {
             List<Emp> emps = new ArrayList<>();
-            jdbcTemplate.query("select * from emp", (rs) -> {
-                emps.add(buildEmpAggregator(rs));
-            });
+            jdbcTemplate.query("select * from emp", (rs) -> {emps.add(buildEmpAggregator(rs));});
             return Optional.of(emps);
         } catch (DataAccessException e) {
             return Optional.empty();

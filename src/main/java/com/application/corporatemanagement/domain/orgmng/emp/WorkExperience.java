@@ -2,7 +2,6 @@ package com.application.corporatemanagement.domain.orgmng.emp;
 
 import com.application.corporatemanagement.common.framework.AuditableEntity;
 import com.application.corporatemanagement.domain.common.valueobjs.Duration;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
@@ -28,10 +27,10 @@ public class WorkExperience extends AuditableEntity {
     }
 
     public LocalDate getStartDate() {
-        return this.duration.getStartDate();
+        return this.duration.startDate();
     }
 
     public LocalDate getEndDate() {
-        return this.duration.getEndDate();
+        return this.duration.endDate();
     }
 }

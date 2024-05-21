@@ -13,7 +13,4 @@ public class EmpValidator {
         this.empRepository = empRepository;
     }
 
-    public void check() {
-
-    }
 }

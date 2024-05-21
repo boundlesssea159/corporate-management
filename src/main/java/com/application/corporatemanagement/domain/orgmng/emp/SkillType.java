@@ -11,11 +11,6 @@ public enum SkillType {
         this.value = value;
         this.text = text;
     }
-
-    public String getText() {
-        return text;
-    }
-
     public Long getValue() {
         return value;
     }

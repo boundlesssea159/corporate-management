@@ -10,8 +10,4 @@ public enum OrgTypeStatus {
         this.value = value;
         this.text = text;
     }
-
-    public String getValue() {
-        return value;
-    }
 }

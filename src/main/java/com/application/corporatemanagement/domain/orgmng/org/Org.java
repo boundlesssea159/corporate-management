@@ -1,7 +1,6 @@
 package com.application.corporatemanagement.domain.orgmng.org;
 
 import com.application.corporatemanagement.common.framework.AuditableEntity;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 

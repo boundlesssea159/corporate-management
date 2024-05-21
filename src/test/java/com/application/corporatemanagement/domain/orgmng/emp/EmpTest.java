@@ -4,6 +4,7 @@ import com.application.corporatemanagement.domain.common.exceptions.BusinessExce
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -49,6 +50,18 @@ class EmpTest {
     }
 
     @Test
+    void should_modify_nothing_if_all_fields_is_same() {
+        Emp emp = Emp.builder().build();
+        emp.addSkill(1L, 2L, 5L, 10010L);
+        emp.updateSkill(1L, 2L, 5L, 10020L);
+        Optional<Skill> optionalSkill = emp.getSkills().stream().filter(skill -> skill.getSkillType().equals(1L)).findFirst();
+        assertTrue(optionalSkill.isPresent());
+        Skill skill = optionalSkill.get();
+        assertEquals(2L, skill.getSkillLevel().getValue());
+        assertEquals(5L, skill.getDuration());
+    }
+
+    @Test
     void should_throw_exception_if_become_regular_from_not_probation() {
         Emp emp = Emp.builder().status(EmpStatus.REGULAR).build();
         assertThrows(BusinessException.class, emp::becomeRegular);
@@ -73,7 +86,4 @@ class EmpTest {
         emp.terminate();
         assertEquals(EmpStatus.TERMINATED, emp.getStatus());
     }
-
-    // todo extract duration object
-
 }
