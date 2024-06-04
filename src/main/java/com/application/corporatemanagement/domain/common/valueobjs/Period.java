@@ -4,11 +4,11 @@ import com.application.corporatemanagement.domain.common.exceptions.BusinessExce
 
 import java.time.LocalDate;
 
-public class Duration {
+public class Period {
     protected final LocalDate startDate;
     protected final LocalDate endDate;
 
-    public Duration(LocalDate startDate, LocalDate endDate) {
+    public Period(LocalDate startDate, LocalDate endDate) {
         if (startDate.isAfter(endDate)) {
             throw new BusinessException("开始时间不能大于结束时间");
         }
@@ -16,7 +16,7 @@ public class Duration {
         this.endDate = endDate;
     }
 
-    public boolean isOverlap(Duration date) {
+    public boolean isOverlap(Period date) {
         return (this.startDate.isBefore(date.endDate()) && this.endDate.isAfter(date.startDate())) ||
                 (date.startDate().isBefore(this.endDate) && date.endDate().isAfter(this.startDate));
     }

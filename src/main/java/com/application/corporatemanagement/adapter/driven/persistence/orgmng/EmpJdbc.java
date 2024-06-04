@@ -3,7 +3,7 @@ package com.application.corporatemanagement.adapter.driven.persistence.orgmng;
 import com.application.corporatemanagement.adapter.driven.persistence.exceptions.QueryException;
 import com.application.corporatemanagement.adapter.driven.persistence.exceptions.ReflectException;
 import com.application.corporatemanagement.domain.common.exceptions.BusinessException;
-import com.application.corporatemanagement.domain.common.valueobjs.Duration;
+import com.application.corporatemanagement.domain.common.valueobjs.Period;
 import com.application.corporatemanagement.domain.orgmng.emp.EmpRepository;
 import com.application.corporatemanagement.common.framework.ChangingStatus;
 import com.application.corporatemanagement.domain.orgmng.emp.*;
@@ -179,7 +179,7 @@ public class EmpJdbc implements EmpRepository {
             WorkExperience workExperience = WorkExperience.builder()
                     .id(workExperienceRow.getLong("id"))
                     .tenant(workExperienceRow.getLong("tenant_id"))
-                    .duration(new Duration(LocalDate.parse(workExperienceRow.getString("start_date")), LocalDate.parse(workExperienceRow.getString("end_date"))))
+                    .duration(new Period(LocalDate.parse(workExperienceRow.getString("start_date")), LocalDate.parse(workExperienceRow.getString("end_date"))))
                     .company(workExperienceRow.getString("company"))
                     .build();
             empForRebuilding.addWorkExperience(workExperience);

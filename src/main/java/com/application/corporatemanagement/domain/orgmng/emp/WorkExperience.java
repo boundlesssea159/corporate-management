@@ -1,7 +1,7 @@
 package com.application.corporatemanagement.domain.orgmng.emp;
 
 import com.application.corporatemanagement.common.framework.AuditableEntity;
-import com.application.corporatemanagement.domain.common.valueobjs.Duration;
+import com.application.corporatemanagement.domain.common.valueobjs.Period;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
@@ -15,14 +15,14 @@ public class WorkExperience extends AuditableEntity {
 
     private Long tenant;
 
-    private Duration duration;
+    private Period duration;
 
     private String company;
 
     WorkExperience(Long tenant, LocalDate startDate, LocalDate endDate, String company, LocalDateTime createdAt, Long createdBy) {
         super(createdAt, createdBy);
         this.tenant = tenant;
-        this.duration = new Duration(startDate, endDate);
+        this.duration = new Period(startDate, endDate);
         this.company = company;
     }
 

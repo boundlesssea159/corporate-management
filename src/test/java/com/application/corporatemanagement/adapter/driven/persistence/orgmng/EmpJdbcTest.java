@@ -1,7 +1,7 @@
 package com.application.corporatemanagement.adapter.driven.persistence.orgmng;
 
 import com.application.corporatemanagement.common.framework.ChangingStatus;
-import com.application.corporatemanagement.domain.common.valueobjs.Duration;
+import com.application.corporatemanagement.domain.common.valueobjs.Period;
 import com.application.corporatemanagement.domain.orgmng.emp.*;
 import lombok.Getter;
 import org.junit.jupiter.api.Test;
@@ -45,7 +45,7 @@ class EmpJdbcTest {
         WorkExperience workExperience = WorkExperience.builder()
                 .tenant(1L)
                 .company("company")
-                .duration(new Duration(LocalDate.now().minusYears(1), LocalDate.now()))
+                .duration(new Period(LocalDate.now().minusYears(1), LocalDate.now()))
                 .createdBy(userId)
                 .lastUpdatedBy(userId)
                 .build();
@@ -189,7 +189,7 @@ class EmpJdbcTest {
                 .workExperiences(List.of(empParameter.workExperience, WorkExperience.builder()
                         .tenant(empParameter.tenant)
                         .company("company3")
-                        .duration(new Duration(LocalDate.now().minusYears(5), LocalDate.now()))
+                        .duration(new Period(LocalDate.now().minusYears(5), LocalDate.now()))
                         .changingStatus(ChangingStatus.NEW)
                         .createdBy(empParameter.userId)
                         .lastUpdatedBy(empParameter.userId)
@@ -252,7 +252,7 @@ class EmpJdbcTest {
                         WorkExperience.builder()
                                 .tenant(empParameter.tenant)
                                 .company(empParameter.workExperience.getCompany())
-                                .duration(new Duration(LocalDate.now().minusYears(5), LocalDate.now().minusYears(1)))
+                                .duration(new Period(LocalDate.now().minusYears(5), LocalDate.now().minusYears(1)))
                                 .changingStatus(ChangingStatus.UPDATED)
                                 .lastUpdatedBy(empParameter.userId)
                                 .build()
@@ -260,7 +260,7 @@ class EmpJdbcTest {
                         , WorkExperience.builder()
                                 .tenant(empParameter.tenant)
                                 .company("company2")
-                                .duration(new Duration(LocalDate.now().minusYears(5), LocalDate.now()))
+                                .duration(new Period(LocalDate.now().minusYears(5), LocalDate.now()))
                                 .changingStatus(ChangingStatus.NEW)
                                 .createdBy(empParameter.userId)
                                 .lastUpdatedBy(empParameter.userId)
