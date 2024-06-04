@@ -79,8 +79,8 @@ public class Emp extends AggregateRoot {
     }
 
     private void workExperienceTimeShouldNotOverlap(WorkExperience workExperience) {
-        this.workExperiences.forEach(we -> {
-            if (we.getDuration().isDateOverlap(workExperience.getDuration())) {
+        this.workExperiences.forEach(experience -> {
+            if (experience.getDuration().isOverlap(workExperience.getDuration())) {
                 throw new BusinessException("工作经验时间不能重叠");
             }
         });
