@@ -1,8 +1,10 @@
-package com.application.corporatemanagement.domain.projectmng;
+package com.application.corporatemanagement.domain.projectmng.common.project;
 
 import com.application.corporatemanagement.common.framework.AggregateRoot;
 import com.application.corporatemanagement.domain.common.valueobjs.Period;
 import com.application.corporatemanagement.domain.effortmng.EffortItem;
+import com.application.corporatemanagement.domain.projectmng.member.Member;
+import com.application.corporatemanagement.domain.projectmng.subproject.SubProject;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 

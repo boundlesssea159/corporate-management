@@ -1,4 +1,6 @@
-package com.application.corporatemanagement.domain.projectmng;
+package com.application.corporatemanagement.domain.projectmng.innerproject;
+
+import com.application.corporatemanagement.domain.projectmng.common.project.Project;
 
 import java.util.List;
 

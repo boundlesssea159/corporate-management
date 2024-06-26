@@ -2,7 +2,11 @@ package com.application.corporatemanagement.application.effortmng;
 
 import com.application.corporatemanagement.domain.effortmng.CommonEffortItem;
 import com.application.corporatemanagement.domain.effortmng.CommonEffortItemRepository;
-import com.application.corporatemanagement.domain.projectmng.*;
+import com.application.corporatemanagement.domain.projectmng.clientproject.ClientProject;
+import com.application.corporatemanagement.domain.projectmng.clientproject.ClientProjectRepository;
+import com.application.corporatemanagement.domain.projectmng.innerproject.InnerProject;
+import com.application.corporatemanagement.domain.projectmng.innerproject.InnerProjectRepository;
+import com.application.corporatemanagement.domain.projectmng.member.Member;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -107,8 +111,8 @@ class EffortServiceTest {
             assertEquals(1, availableEffortItems.commonEffortItems.size());
             assertEquals(EffortItemDTO.builder().id(1L).name("project").build(), availableEffortItems.commonEffortItems.get(0));
         }
-
     }
+
 
 
 }

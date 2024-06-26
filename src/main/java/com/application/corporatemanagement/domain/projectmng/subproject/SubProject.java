@@ -1,4 +1,4 @@
-package com.application.corporatemanagement.domain.projectmng;
+package com.application.corporatemanagement.domain.projectmng.subproject;
 
 import com.application.corporatemanagement.common.framework.AuditableEntity;
 import com.application.corporatemanagement.domain.effortmng.EffortItem;

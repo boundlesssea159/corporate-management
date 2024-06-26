@@ -1,4 +1,4 @@
-package com.application.corporatemanagement.domain.projectmng;
+package com.application.corporatemanagement.domain.projectmng.common.project;
 
 // 工时粒度
 public enum EffortGranularity {

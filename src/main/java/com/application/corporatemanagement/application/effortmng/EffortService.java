@@ -2,7 +2,9 @@ package com.application.corporatemanagement.application.effortmng;
 
 import com.application.corporatemanagement.domain.effortmng.CommonEffortItem;
 import com.application.corporatemanagement.domain.effortmng.CommonEffortItemRepository;
-import com.application.corporatemanagement.domain.projectmng.*;
+import com.application.corporatemanagement.domain.projectmng.clientproject.ClientProjectRepository;
+import com.application.corporatemanagement.domain.projectmng.innerproject.InnerProjectRepository;
+import com.application.corporatemanagement.domain.projectmng.common.project.Project;
 import lombok.Getter;
 
 import java.util.List;
