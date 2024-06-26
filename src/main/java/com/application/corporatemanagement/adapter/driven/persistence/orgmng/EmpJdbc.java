@@ -195,6 +195,7 @@ public class EmpJdbc implements EmpRepository {
     }
 
     private void updateEmp(Emp emp) {
+        // todo encapsulate the logic to entity
         if (Objects.requireNonNull(emp.getChangingStatus()) == ChangingStatus.UPDATED) {
             int update = this.jdbcTemplate.update("update emp "
                             + " set org_id = ?"

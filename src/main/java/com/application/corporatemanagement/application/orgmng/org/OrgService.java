@@ -14,7 +14,6 @@ public class OrgService {
     private final OrgRepository orgRepository;
     private final OrgBuilderFactory orgBuilderFactory;
     private final OrgHandler orgHandler;
-
     private final CancelValidator cancelValidator;
 
     @Autowired
