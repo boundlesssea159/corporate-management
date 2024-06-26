@@ -9,7 +9,7 @@ public class AvailableEffortItems {
     List<EffortItemDTO> subProjects = new ArrayList<>();
     List<EffortItemDTO> commonEffortItems = new ArrayList<>();
 
-    void addEffortItem(EffortService.EffortItemType type, Long id, String name) {
+    void addEffortItem(EffortItemType type, Long id, String name) {
         switch (type) {
             case INNER_PROJECT -> innerProjects.add(EffortItemDTO.builder().id(id).name(name).build());
             case CLIENT_PROJECT -> clientProjects.add(EffortItemDTO.builder().id(id).name(name).build());

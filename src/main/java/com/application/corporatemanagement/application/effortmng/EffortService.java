@@ -49,11 +49,4 @@ public class EffortService {
     private void addEffortItems(AvailableEffortItems availableEffortItems, List<Project> innerAvailableProjects, EffortItemType innerProject) {
         innerAvailableProjects.forEach(project -> availableEffortItems.addEffortItem(innerProject, project.getId(), project.getName()));
     }
-
-    public enum EffortItemType {
-        INNER_PROJECT,
-        CLIENT_PROJECT,
-        SUB_PROJECT,
-        COMMON_EFFORT_ITEM
-    }
 }
